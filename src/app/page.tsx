@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
+
 
 
 // XCoin – Landing Mockup
@@ -74,7 +76,7 @@ function XCoinMark() {
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-2xl bg-[#2C2C2C] p-4 shadow-xl border border-neutral-700">
+    <div className="rounded-2xl bg-carbon p-4 shadow-xl border border-neutral-700">
       <div className="text-sm text-neutral-400">{label}</div>
       <div className="text-2xl font-semibold text-slate-100 tracking-tight">{value}</div>
       {sub && <div className="text-xs text-neutral-400 mt-1">{sub}</div>}
@@ -92,8 +94,10 @@ function SectionTitle({ k, sub }: { k: string; sub?: string }) {
 }
 
 export default function XCoinLanding() {
+// Dentro del JSX del Hero:
+const prefersReduced = useReducedMotion();
   return (
-    <main className="min-h-screen bg-[#1B1B1B] text-slate-100">
+    <main className="min-h-screen bg-graphite text-slate-100">
       {/* Navbar */}
       <header className="sticky top-0 backdrop-blur bg-black/40 border-b border-neutral-800 z-50">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
@@ -109,7 +113,7 @@ export default function XCoinLanding() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <select aria-label="language" className="bg-[#2C2C2C] text-sm rounded-xl px-2 py-1 border border-neutral-700">
+            <select aria-label="language" className="bg-carbon text-sm rounded-xl px-2 py-1 border border-neutral-700">
               <option>ES</option>
               <option>EN</option>
               <option>ZH</option>
@@ -131,8 +135,14 @@ export default function XCoinLanding() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+        <div className="mx-auto max-w-6xl px-4 py-16 grid md:grid-cols-2 gap-12 items-center">
+          {/* Texto (izquierda en desktop) */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="md:order-1 order-2"
+          >
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
               El otro lado del <span className="text-amber-400">bloque</span>.
             </h1>
@@ -144,7 +154,7 @@ export default function XCoinLanding() {
               <a href="#whitepaper" className="rounded-2xl border border-neutral-700 px-4 py-2 hover:bg-white/5">
                 Leer Whitepaper
               </a>
-              <a href="#tokenomics" className="rounded-2xl bg-[#4A7D9A] px-4 py-2 hover:bg-[#5f93b0]">
+              <a href="#tokenomics" className="rounded-2xl bg-steel px-4 py-2 hover:opacity-90">
                 Ver Tokenomics 80/20
               </a>
             </div>
@@ -155,8 +165,29 @@ export default function XCoinLanding() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7 }} className="flex justify-center md:justify-end">
-            <XCoinMark />
+          {/* Moneda (derecha en desktop) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7 }}
+            className="flex justify-center md:justify-end md:order-2 order-1"
+          >
+            <motion.div
+              style={{ transformStyle: "preserve-3d", perspective: 1000 }}
+              animate={prefersReduced ? {} : { rotateY: [0, 360] }}
+              transition={prefersReduced ? {} : { duration: 10, repeat: Infinity, ease: "linear" }}
+              whileHover={prefersReduced ? {} : { rotateY: "+=180" }}
+              className="drop-shadow-2xl md:mr-6"
+            >
+              <Image
+                src="/xcoin-logo.png"
+                alt="XCoin Moneda Espejo"
+                width={320}
+                height={320}
+                className="w-56 h-56 md:w-80 md:h-80 object-contain [backface-visibility:hidden]"
+                priority
+              />
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -181,7 +212,7 @@ export default function XCoinLanding() {
                 predatorias: liberaciones escalonadas, tesorería estabilizadora y métricas públicas.
               </p>
             </div>
-            <div className="bg-[#2C2C2C] p-5 rounded-2xl border border-neutral-700">
+            <div className="bg-carbon p-5 rounded-2xl border border-neutral-700">
               <h3 className="font-semibold text-slate-100">Descargas</h3>
               <ul className="mt-3 space-y-2 text-sm">
                 <li><a className="hover:underline" href="#">Whitepaper (PDF)</a></li>
@@ -199,15 +230,15 @@ export default function XCoinLanding() {
           <SectionTitle k="Tokenomics 80/20" sub="Diseñado para acumulación responsable" />
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-3 text-neutral-300">
-              <div className="rounded-xl bg-[#2C2C2C] p-4 border border-neutral-700">
+              <div className="rounded-xl bg-carbon p-4 border border-neutral-700">
                 <div className="text-slate-100 font-semibold">Distribución inicial</div>
                 <p className="text-sm mt-1">80% Usuarios (bloqueado por fases) · 20% Tesorería (estabilidad, desarrollo, MM).</p>
               </div>
-              <div className="rounded-xl bg-[#2C2C2C] p-4 border border-neutral-700">
+              <div className="rounded-xl bg-carbon p-4 border border-neutral-700">
                 <div className="text-slate-100 font-semibold">Precio de lanzamiento</div>
                 <p className="text-sm mt-1">Entrada fija a 1 USD por token.</p>
               </div>
-              <div className="rounded-xl bg-[#2C2C2C] p-4 border border-neutral-700">
+              <div className="rounded-xl bg-carbon p-4 border border-neutral-700">
                 <div className="text-slate-100 font-semibold">Oráculo</div>
                 <p className="text-sm mt-1">Feed público que publica Market Cap objetivo y activa desbloqueos.</p>
               </div>
