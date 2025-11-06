@@ -1,0 +1,27 @@
+/* Tailwind v4 core */
+@import "tailwindcss";
+
+/* === Tokens XCoin (puedes ampliar libremente) === */
+@theme inline {
+  /* Paleta corporativa */
+  --color-graphite: #1B1B1B;
+  --color-carbon:   #2C2C2C;
+  --color-silver:   #D9D9D9;
+  --color-steel:    #4A7D9A;
+  --color-gold:     #B98B2E;
+
+  /* Tipografías si usas Geist u otra: ajusta estas vars si corresponde */
+  /* --font-sans: var(--font-geist-sans); */
+  /* --font-mono: var(--font-geist-mono); */
+}
+
+/* Modo claro/oscuro básico (puedes adaptar a tu preferencia) */
+:root {
+  --background: #0a0a0a;   /* oscuro por defecto */
+  --foreground: #ededed;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}

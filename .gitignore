@@ -1,0 +1,28 @@
+# Node / Next.js
+node_modules/
+.next/
+dist/
+build/
+out/
+coverage/
+
+# Env
+.env
+.env.*.local
+*.env
+
+# Logs
+npm-debug.log*
+yarn-*.log
+pnpm-debug.log*
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Hardhat (futuro)
+artifacts/
+cache/
+typechain-types/
