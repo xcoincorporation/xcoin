@@ -1,0 +1,22 @@
+# Node / Next.js
+node_modules/
+.next/
+dist/
+out/
+coverage/
+
+# Env
+.env
+.env.local
+.env.*.local
+*.secret
+*.key
+*.pem
+
+# Logs/OS/Editor
+npm-debug.log*
+yarn-*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
