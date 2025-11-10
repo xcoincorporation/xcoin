@@ -1,0 +1,13 @@
+/* Tailwind v4 core */
+@import "tailwindcss";
+
+/* Modo claro/oscuro básico (puedes adaptar a tu preferencia) */
+:root {
+  --background: #0a0a0a;   /* oscuro por defecto */
+  --foreground: #ededed;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
