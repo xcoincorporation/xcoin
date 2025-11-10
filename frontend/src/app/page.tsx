@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import HeaderStatsComponent from "../components/HeaderStats";
 import TokenomicsCard from "../components/TokenomicsCard";
 import HeaderStats from "../components/HeaderStats";
+import dynamic from "next/dynamic";
+
 
 // XCoin – Landing Mockup
 // Nota: Este archivo está listo para integrarse en un proyecto Next.js (pages/app client) o CRA.
@@ -23,6 +25,8 @@ const navItems = [
 export default function Page() {
   return <XCoinLanding />;
 }
+
+const TreasuryDonut = dynamic(() => import("@/components/TreasuryDonut"), { ssr: false });
 
 // NOTE: Header stats live in `src/components/HeaderStats.tsx` and are imported above as
 // `HeaderStatsComponent`. A local `HeaderStats` was removed to avoid naming collisions
@@ -240,6 +244,9 @@ const prefersReduced = useReducedMotion();
 
       {/* Tokenomics */}
       <section id="tokenomics" className="border-t border-neutral-800 bg-[#161616]">
+          <section className="mx-auto max-w-6xl px-4 mt-10">
+            <TreasuryDonut />
+          </section>
         <div className="mx-auto max-w-6xl px-4 py-14">
           <SectionTitle k="Tokenomics 80/20" sub="Diseñado para acumulación responsable" />
           <div className="grid md:grid-cols-2 gap-8">
