@@ -1,13 +1,22 @@
 /* Tailwind v4 core */
 @import "tailwindcss";
 
-/* Modo claro/oscuro básico (puedes adaptar a tu preferencia) */
+/* (opcional) variables simples */
 :root {
-  --background: #0a0a0a;   /* oscuro por defecto */
-  --foreground: #ededed;
+  --background: #0f0f10;
+  --foreground: #e5e7eb;
 }
 
-body {
+html, body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Utilitarias de botones con @apply */
+.btn {
+  @apply rounded-2xl px-4 py-2 shadow border border-white/10
+         bg-neutral-800/70 hover:bg-neutral-700/70 transition;
+}
+.btn-primary {
+  @apply bg-[#f5c84b] text-black hover:brightness-95;
 }
