@@ -21,17 +21,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-[#f5c84b]/30`}>
         {/* NAVBAR */}
-        <header className="sticky top-0 z-[999] bg-[#0f0f10]/80 backdrop-blur border-b border-white/5 overflow-visible">
-          <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between overflow-visible">
-            {/* IZQUIERDA: tus enlaces */}
+        <header className="sticky top-0 z-50 bg-[#0f0f10]/80 backdrop-blur border-b border-white/5 h-14">
+          <div className="mx-auto max-w-6xl px-4 h-full flex items-center justify-between">
+            {/* izquierda: brand + links */}
             <nav className="flex items-center gap-6">
-              {/* ...links... */}
+              {/* ... */}
             </nav>
 
-            {/* DERECHA: Supply + acciones */}
+            {/* derecha: botones + Supply */}
             <div className="flex items-center gap-3">
               <SupplyBadge />
-              {/* ...idioma / whitelist... */}
+              {/* otros botones (idioma, whitelist, etc.) */}
             </div>
           </div>
         </header>
