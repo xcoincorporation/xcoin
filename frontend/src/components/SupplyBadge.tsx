@@ -1,117 +1,132 @@
-// frontend/src/components/SupplyBadge.tsx
 "use client";
-import { useEffect, useMemo, useState } from "react";
-import { getReadContract } from "../lib/xcoin";
+import { useEffect, useState } from "react";
+import { readBasics, toHuman } from "../lib/xcoin";
+import Skeleton from "./ui/Skeleton";
 
-const XCOIN_ADDR = process.env.NEXT_PUBLIC_XCOIN_ADDRESS!;
-const TREASURY_ADDR = process.env.NEXT_PUBLIC_TREASURY_ADDR!;
-
-/** helpers */
-const toHuman = (raw: bigint, decimals: number) => Number(raw) / 10 ** decimals;
-const fmt = (n: number, maxFrac = 0) => {
-  try { return new Intl.NumberFormat("es-AR", { maximumFractionDigits: maxFrac }).format(n); }
-  catch { return n.toLocaleString(); }
+type Basics = {
+  name: string;
+  symbol: string;
+  decimals: number;
+  totalSupply: bigint;
+  token: string;
+  treasury: string;
 };
+
+function short(addr: string) {
+  return addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "—";
+}
 
 export default function SupplyBadge() {
   const [open, setOpen] = useState(false);
-  const [decimals, setDecimals] = useState(18);
-  const [total, setTotal] = useState<number>(0);
-  const [err, setErr] = useState<string | null>(null);
+  const [data, setData] = useState<Basics | null>(null);
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
       try {
-        const c = getReadContract();
-        const [dec, ts] = await Promise.all([c.decimals(), c.totalSupply()]);
-        const d = Number(dec);
-        setDecimals(d);
-        setTotal(toHuman(ts, d));
-        setErr(null);
-      } catch (e: any) {
-        setErr(e?.message ?? "Error de lectura on-chain");
+        const basics = await readBasics();
+        if (mounted) setData(basics);
+      } catch {
+        if (mounted) setData(null);
       }
     })();
+    return () => { mounted = false; };
   }, []);
 
-  const supplyShort = useMemo(() => fmt(total), [total]);
+  const humanTotal = data ? toHuman(data.totalSupply, data.decimals) : "—";
 
   return (
-    <div className="relative z-[70]">
-      {/* Botón dentro del header (no fixed) */}
+    <div className="relative">
+      {/* Botón en el header */}
       <button
-        onClick={() => setOpen(v => !v)}
-        className="inline-flex items-center gap-2 rounded-full bg-neutral-900/80 border border-white/10 px-3 py-1.5 text-sm
-                   hover:bg-neutral-800/80 transition shadow"
-        title="Detalles on-chain"
+        onClick={() => setOpen((v) => !v)}
+        className="btn btn-primary xc-tooltip"
+        data-tip="Ver detalles on-chain"
       >
-        <span className="opacity-80">Supply:</span>
-        <span className="font-semibold text-[#f5c84b]">{supplyShort}</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" className="opacity-70">
-          <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="2" />
+        Supply: <span className="font-semibold ml-1">{humanTotal}</span>
+        <svg className="inline-block ml-2 opacity-80" width="10" height="10" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M5 7l5 5 5-5H5z" />
         </svg>
       </button>
 
-      {/* Panel en PORTAL visual (position: fixed) y con offset bajo el navbar */}
+      {/* Panel fijo bajo el navbar */}
       {open && (
-        <div
-          className="fixed right-4 md:right-6 top-[56px]  // 56px = alto del navbar (h-14). Ajustar si cambias la altura.
-                     w-[320px] rounded-xl border border-white/10 bg-[#101010]/95 backdrop-blur
-                     shadow-xl z-[80] p-3"
-          onMouseLeave={() => setOpen(false)}
-        >
-          <div className="text-[10px] uppercase tracking-widest text-neutral-400 pb-2">On-chain</div>
+        <div className="fixed right-4 top-[56px] w-[320px] rounded-2xl border border-white/10 bg-[#1b1b1b]/95 backdrop-blur shadow-2xl z-[55]">
+          <div className="px-4 py-3 border-b border-white/10 text-xs uppercase tracking-wider opacity-80">On-chain</div>
 
-          {err ? (
-            <div className="text-sm text-red-300 px-1 py-2">⛔ {err}</div>
-          ) : (
-            <div className="grid gap-2 text-sm">
-              <div className="flex items-center justify-between">
-                <div className="text-neutral-400">Token</div>
-                <div className="font-medium">XCOIN</div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="text-neutral-400">Contrato</div>
-                <div className="flex items-center gap-2">
-                  <a
-                    className="hover:underline"
-                    href={`https://sepolia.etherscan.io/address/${XCOIN_ADDR}`} target="_blank" rel="noreferrer"
-                  >
-                    {XCOIN_ADDR.slice(0, 6)}…{XCOIN_ADDR.slice(-4)}
-                  </a>
-                  <button
-                    className="text-xs opacity-70 hover:opacity-100"
-                    onClick={() => navigator.clipboard.writeText(XCOIN_ADDR)}
-                  >
-                    Copiar
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="text-neutral-400">Tesorería</div>
-                <div className="flex items-center gap-2">
-                  <a
-                    className="hover:underline"
-                    href={`https://sepolia.etherscan.io/address/${TREASURY_ADDR}`} target="_blank" rel="noreferrer"
-                  >
-                    {TREASURY_ADDR.slice(0, 6)}…{TREASURY_ADDR.slice(-4)}
-                  </a>
-                  <button
-                    className="text-xs opacity-70 hover:opacity-100"
-                    onClick={() => navigator.clipboard.writeText(TREASURY_ADDR)}
-                  >
-                    Copiar
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-2 text-xs text-neutral-400">
-                Decimals: {decimals} · Total: <span className="text-neutral-200 font-medium">{supplyShort}</span>
+          <div className="p-4 space-y-3 text-sm">
+            {/* Token */}
+            <div className="flex items-center justify-between">
+              <span className="opacity-80">Token</span>
+              <div className="flex items-center gap-2">
+                {!data ? (
+                  <Skeleton w={80} h={16} />
+                ) : (
+                  <span className="font-medium">{data.symbol}</span>
+                )}
               </div>
             </div>
-          )}
+
+            {/* Contrato */}
+            <div className="flex items-center justify-between">
+              <span className="opacity-80">Contrato</span>
+              <div className="flex items-center gap-2">
+                {!data ? (
+                  <Skeleton w={130} h={16} />
+                ) : (
+                  <>
+                    <a
+                      className="underline decoration-dotted underline-offset-2 xc-tooltip"
+                      data-tip="Abrir en Etherscan"
+                      href={`https://sepolia.etherscan.io/address/${data.token}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {short(data.token)}
+                    </a>
+                    <button
+                      className="px-2 py-1 rounded bg-neutral-800/70 hover:bg-neutral-700/70 xc-tooltip"
+                      data-tip="Copiar"
+                      onClick={() => navigator.clipboard.writeText(data.token)}
+                    >
+                      Copiar
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Tesorería */}
+            <div className="flex items-center justify-between">
+              <span className="opacity-80">Tesorería</span>
+              <div className="flex items-center gap-2">
+                {!data ? (
+                  <Skeleton w={130} h={16} />
+                ) : (
+                  <>
+                    <a
+                      className="underline decoration-dotted underline-offset-2 xc-tooltip"
+                      data-tip="Abrir en Etherscan"
+                      href={`https://sepolia.etherscan.io/address/${data.treasury}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {short(data.treasury)}
+                    </a>
+                    <button
+                      className="px-2 py-1 rounded bg-neutral-800/70 hover:bg-neutral-700/70 xc-tooltip"
+                      data-tip="Copiar"
+                      onClick={() => navigator.clipboard.writeText(data.treasury)}
+                    >
+                      Copiar
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="pt-2 text-xs opacity-60 text-right">auto-refresh 15s</div>
+          </div>
         </div>
       )}
     </div>
