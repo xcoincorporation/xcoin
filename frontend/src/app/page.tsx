@@ -18,7 +18,7 @@ import dynamic from "next/dynamic";
 const navItems = [
   { label: "Whitepaper", href: "#whitepaper" },
   { label: "Tokenomics", href: "#tokenomics" },
-  { label: "Dashboard", href: "#dashboard" },
+  { label: "Oráculo", href: "#dashboard" },
   { label: "Roadmap", href: "#roadmap" },
 ];
 
@@ -26,7 +26,7 @@ export default function Page() {
   return <XCoinLanding />;
 }
 
-const TreasuryDonut = dynamic(() => import("@/components/TreasuryDonut"), { ssr: false });
+const TreasuryDonut = dynamic(() => import("../components/TreasuryDonut"), { ssr: false });
 
 // NOTE: Header stats live in `src/components/HeaderStats.tsx` and are imported above as
 // `HeaderStatsComponent`. A local `HeaderStats` was removed to avoid naming collisions
