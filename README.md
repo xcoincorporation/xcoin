@@ -58,7 +58,14 @@ El objetivo de XCoin es demostrar un modelo simple pero auditable de:
 - Botón refrescar
 - API dedicada: `/api/oracle`
 
----
+### 🔍 Oráculo & control anti pump-dump
+
+- El precio de referencia de XCoin se define inicialmente en el backend como un valor de laboratorio, no como un precio de mercado.
+- El oráculo lee el supply real desde el contrato y calcula el Market Cap estimado a partir de ese precio de referencia.
+- Antes de cualquier listado en exchanges, se fijan las reglas de desbloqueo por fases (80/20) para evitar ciclos de pump & dump descontrolados.
+- El 20% asignado a Tesorería está pensado como colchón de liquidez y estabilidad, no como “bolsa de venta” masiva.
+- El diseño del oráculo permite reemplazar el precio manual por un feed real (DEX, Chainlink, etc.) sin reescribir la UI ni el dashboard.
+
 
 ## 🧱 Arquitectura del repositorio
 

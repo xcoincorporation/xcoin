@@ -54,6 +54,9 @@ export default function OraclePage() {
   }, []);
 
   const progress = data ? Math.min(Math.max(data.progress, 0), 1) : 0;
+  const usersPool = data ? data.totalSupply * 0.8 : 0;
+  const treasuryPool = data ? data.totalSupply * 0.2 : 0;
+
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 space-y-8">
@@ -125,6 +128,51 @@ export default function OraclePage() {
               {data
                 ? data.totalSupply.toLocaleString("es-AR") + " " + data.symbol
                 : "—"}
+            </div>
+          </div>
+          
+          {/* Fases y distribución 80/20 */}
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="rounded-xl border border-neutral-800 bg-black/40 px-4 py-3">
+              <div className="text-xs text-neutral-400 mb-1">Fase actual</div>
+              <div className="text-sm text-neutral-200">
+                FASE 0 — Entorno de prueba (Sepolia) con oráculo de referencia.
+              </div>
+              <div className="text-xs text-neutral-500 mt-2">
+                El precio mostrado es de laboratorio. Las reglas de desbloqueo se fijan
+                antes de listar en exchanges para evitar ciclos de pump &amp; dump
+                descontrolados.
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-neutral-800 bg-black/40 px-4 py-3">
+              <div className="text-xs text-neutral-400 mb-1">
+                Distribución teórica 80/20 sobre el supply total
+              </div>
+              {data ? (
+                <ul className="text-xs text-neutral-300 space-y-1">
+                  <li>
+                    80% Usuarios:{" "}
+                    <span className="font-mono">
+                      {usersPool.toLocaleString("es-AR")} {data.symbol}
+                    </span>
+                  </li>
+                  <li>
+                    20% Tesorería:{" "}
+                    <span className="font-mono">
+                      {treasuryPool.toLocaleString("es-AR")} {data.symbol}
+                    </span>
+                  </li>
+                  <li className="text-neutral-500 mt-1">
+                    Esta vista es explicativa; la lógica de vesting y desbloqueo se
+                    implementará en los contratos en fases posteriores.
+                  </li>
+                </ul>
+              ) : (
+                <div className="text-xs text-neutral-500">
+                  Cargando distribución 80/20…
+                </div>
+              )}
             </div>
           </div>
 
