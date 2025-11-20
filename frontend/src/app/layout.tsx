@@ -27,8 +27,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ToastProvider>
           {/* NAVBAR */}
           <header className="sticky top-0 z-50 bg-[#0f0f10]/80 backdrop-blur border-b border-white/5 h-14">
-            <div className="mx-auto max-w-6xl px-4 h-full flex items-center justify-between">
-                            {/* izquierda: brand + links */}
+          <div className="mx-auto max-w-6xl px-4 h-full flex items-center justify-between">
+            {/* izquierda: brand + links */}
+            <div className="flex items-center gap-8">
+              {/* Brand / Inicio */}
+              <Link
+                href="/"
+                className="text-sm font-semibold text-white hover:text-gold transition"
+              >
+                XCoin
+              </Link>
+
               <nav className="flex items-center gap-6 text-sm text-neutral-200">
                 <Link href="/whitepaper" className="hover:text-gold transition">
                   Whitepaper
@@ -55,16 +64,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   Analytics
                 </Link>
               </nav>
-
-
-              {/* derecha: controles + Supply */}
-              <div className="flex items-center gap-3">
-                {/* idioma, whitelist, etc. */}
-                {/* Supply anclado: su panel se posiciona relativo a este contenedor */}
-                <SupplyBadge />
-              </div>
             </div>
-          </header>
+
+            {/* derecha: supply / otros controles (lo que ya tengas) */}
+            {/* ... */}
+          </div>
+        </header>
+
 
           <main>{children}</main>
 
