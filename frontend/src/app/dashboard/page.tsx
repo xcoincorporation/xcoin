@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { getReadContract, readBasics, toHuman } from "../../lib/xcoin";
+import DashboardSalePanel from "@/components/DashboardSalePanel";
+import DashboardWalletPanel from "@/components/DashboardWalletPanel";
+import SaleAdminPanel from "@/components/SaleAdminPanel";
 
 type Basics = Awaited<ReturnType<typeof readBasics>>;
 type LoadState = "idle" | "connecting" | "refreshing";
@@ -206,6 +209,15 @@ export default function DashboardPage() {
               Desconectar
             </button>
           </div>
+
+          <div className="grid gap-6 md:grid-cols-2 mt-6">
+            <DashboardSalePanel />
+            <DashboardWalletPanel />
+          </div>
+          <div className="mt-8">
+            <SaleAdminPanel />
+          </div>
+
         </header>
 
         {/* Estado de la wallet */}

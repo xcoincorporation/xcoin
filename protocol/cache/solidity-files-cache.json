@@ -266,6 +266,84 @@
       "artifacts": [
         "IERC20Metadata"
       ]
+    },
+    "D:\\Proyectos_VSCode\\XCoin\\protocol\\contracts\\XCoinVault.sol": {
+      "lastModificationDate": 1763268018426,
+      "contentHash": "ec7b77658c68076d02404b6ad0428faa",
+      "sourceName": "contracts/XCoinVault.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "XCoinVault"
+      ]
+    },
+    "D:\\Proyectos_VSCode\\XCoin\\protocol\\contracts\\XCoinSale.sol": {
+      "lastModificationDate": 1763594939960,
+      "contentHash": "5a1b309dbf605bd6fe7c1a869fd04c2d",
+      "sourceName": "contracts/XCoinSale.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "XCoinSale"
+      ]
     }
   }
 }

@@ -28,12 +28,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* NAVBAR */}
           <header className="sticky top-0 z-50 bg-[#0f0f10]/80 backdrop-blur border-b border-white/5 h-14">
             <div className="mx-auto max-w-6xl px-4 h-full flex items-center justify-between">
-              {/* izquierda: brand + links */}
+                            {/* izquierda: brand + links */}
               <nav className="flex items-center gap-6 text-sm text-neutral-200">
-                <Link href="#whitepaper" className="hover:text-gold transition">
+                <Link href="/whitepaper" className="hover:text-gold transition">
                   Whitepaper
                 </Link>
-                <Link href="#tokenomics" className="hover:text-gold transition">
+                <Link href="/tokenomics" className="hover:text-gold transition">
                   Tokenomics
                 </Link>
                 <Link href="/oraculo" className="hover:text-gold transition">
@@ -42,10 +42,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/dashboard" className="hover:text-gold transition">
                   Dashboard
                 </Link>
-                <Link href="#roadmap" className="hover:text-gold transition">
+                <Link href="/buy" className="hover:text-gold transition">
+                  Comprar (demo)
+                </Link>
+                <Link href="/roadmap" className="hover:text-gold transition">
                   Roadmap
                 </Link>
+                <Link href="/whitelist" className="hover:text-gold transition">
+                  Whitelist
+                </Link>
+                <Link href="/analytics" className="hover:text-gold transition">
+                  Analytics
+                </Link>
               </nav>
+
 
               {/* derecha: controles + Supply */}
               <div className="flex items-center gap-3">

@@ -4,6 +4,7 @@ import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 import HeaderStatsComponent from "../components/HeaderStats";
 import InvestorCTA from "../components/InvestorCTA";
@@ -82,12 +83,14 @@ export default function HomePage() {
               <option>ES</option>
               <option>EN</option>
             </select>
-            <a
-              href="#whitelist"
-              className="rounded-2xl bg-amber-500 px-4 py-2 text-black font-semibold hover:bg-amber-400 transition"
+
+            <Link
+              href="/whitelist"
+              className="inline-flex items-center justify-center rounded-full bg-[#f5c84b] text-black text-sm font-semibold px-6 py-2.5 hover:brightness-95 transition"
             >
               Whitelist
-            </a>
+            </Link>
+
           </div>
         </div>
       </header>

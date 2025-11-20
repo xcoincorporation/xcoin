@@ -42,9 +42,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20__factory>;
     getContractFactory(
+      name: "XCoinSale",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.XCoinSale__factory>;
+    getContractFactory(
       name: "XCoinToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.XCoinToken__factory>;
+    getContractFactory(
+      name: "XCoinVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.XCoinVault__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -82,10 +90,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC20>;
     getContractAt(
+      name: "XCoinSale",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.XCoinSale>;
+    getContractAt(
       name: "XCoinToken",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.XCoinToken>;
+    getContractAt(
+      name: "XCoinVault",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.XCoinVault>;
 
     deployContract(
       name: "Ownable",
@@ -116,9 +134,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC20>;
     deployContract(
+      name: "XCoinSale",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.XCoinSale>;
+    deployContract(
       name: "XCoinToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.XCoinToken>;
+    deployContract(
+      name: "XCoinVault",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.XCoinVault>;
 
     deployContract(
       name: "Ownable",
@@ -156,10 +182,20 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC20>;
     deployContract(
+      name: "XCoinSale",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.XCoinSale>;
+    deployContract(
       name: "XCoinToken",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.XCoinToken>;
+    deployContract(
+      name: "XCoinVault",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.XCoinVault>;
 
     // default types
     getContractFactory(
