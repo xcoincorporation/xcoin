@@ -419,32 +419,145 @@ export default function WhitepaperPage() {
         </div>
       </section>
 
-      {/* 4. Arquitectura on-chain (resumen por ahora) */}
-      <section className="space-y-3">
+      {/* 4. Arquitectura on-chain (extendida) */}
+      <section className="space-y-4">
         <h2 className="text-xl font-semibold text-white">
-          4. Arquitectura on-chain (resumen)
+          4. Arquitectura on-chain de XCoin
         </h2>
         <p className="text-sm text-neutral-300 leading-relaxed">
-          La arquitectura de XCoin se compone de cuatro piezas principales:
+          XCoin se construye sobre una arquitectura modular, inspirada en los
+          principios de transparencia, verificabilidad y disciplina económica.
+          El ecosistema se compone de varios contratos y una capa de aplicación
+          que exponen su estado en tiempo real.
         </p>
-        <ul className="text-sm text-neutral-300 space-y-1 list-disc pl-5">
-          <li>XCoinToken: contrato ERC-20 principal.</li>
-          <li>
-            XCoinVault: contrato encargado del vesting y las fases de
-            desbloqueo.
-          </li>
-          <li>
-            XCoinSale: contrato de venta controlada de tokens en testnet.
-          </li>
-          <li>
-            Oráculo: capa que publica datos de mercado y activa cambios de fase.
-          </li>
-        </ul>
-        <p className="text-sm text-neutral-300 leading-relaxed">
-          El dashboard lee directamente de estos contratos para reflejar el
-          estado actual del sistema: balances, supply, compras, eventos y
-          evolución de las fases.
-        </p>
+
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-white">
+            4.1 XCoinToken (ERC-20 principal)
+          </h3>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            XCoinToken actúa como la representación digital del activo XCOIN. Es
+            un contrato ERC-20 estándar que mantiene el supply fijo de
+            1.000.000 unidades y gestiona:
+          </p>
+          <ul className="text-sm text-neutral-300 space-y-1 list-disc pl-5">
+            <li>Balances de cada dirección.</li>
+            <li>Transferencias entre cuentas.</li>
+            <li>Aprobaciones para contratos externos (Vault, Sale).</li>
+            <li>Eventos de Transfer y Approval para trazabilidad.</li>
+          </ul>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            No implementa funciones de minting posteriores ni mecanismos
+            inflacionarios. El supply total se define en el deploy y permanece
+            constante, reforzando la escasez del activo.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-white">
+            4.2 XCoinVault — Mecanismo de vesting por fases
+          </h3>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            XCoinVault es el contrato encargado de custodiar y liberar el 80% del
+            supply asignado a usuarios. Su función principal es controlar el
+            vesting de forma dinámica, utilizando fases de desbloqueo ligadas a
+            hitos de Market Cap:
+          </p>
+          <ul className="text-sm text-neutral-300 space-y-1 list-disc pl-5">
+            <li>Almacena los grants asignados a cada dirección.</li>
+            <li>Define un conjunto de fases con un Market Cap objetivo.</li>
+            <li>
+              Cada fase especifica qué porcentaje del grant puede liberarse
+              (medido en basis points, bps).
+            </li>
+            <li>
+              Expone funciones para que los usuarios reclamen sus tokens según
+              la fase alcanzada.
+            </li>
+          </ul>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            De esta forma, el Vault evita que el total del 80% se libere
+            inmediatamente, reduciendo el riesgo de ventas masivas y alineando
+            la liberación efectiva con el crecimiento del proyecto.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-white">
+            4.3 XCoinSale — Módulo de venta temprana
+          </h3>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            El contrato XCoinSale gestiona la venta inicial de XCOIN en testnet.
+            Permite que los usuarios envíen ETH y reciban XCOIN a un precio
+            prefijado, registrando cada compra mediante eventos on-chain.
+          </p>
+          <ul className="text-sm text-neutral-300 space-y-1 list-disc pl-5">
+            <li>Recibe pagos en ETH.</li>
+            <li>Entrega XCOIN desde un saldo pre-fondeado.</li>
+            <li>
+              Calcula cuántos tokens corresponden según el precio configurado.
+            </li>
+            <li>Emite eventos para análisis posteriores (Analytics).</li>
+          </ul>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            En una futura versión en mainnet, este módulo podría ampliarse con
+            límites de compra, pausas de emergencia, listas de acceso (whitelist)
+            y otras medidas de protección para participantes e inversores.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-white">
+            4.4 Oráculo — Capa de información económica
+          </h3>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            El oráculo de XCoin es una pieza clave: provee datos externos que
+            la blockchain no puede generar por sí sola. En la fase de laboratorio,
+            opera como una API controlada por el proyecto, responsable de
+            publicar:
+          </p>
+          <ul className="text-sm text-neutral-300 space-y-1 list-disc pl-5">
+            <li>Market Cap estimado en USD.</li>
+            <li>Precio de referencia del token.</li>
+            <li>Progreso hacia las metas de cada fase.</li>
+            <li>Señales para dashboards y herramientas de análisis.</li>
+          </ul>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            A largo plazo, el diseño contempla la integración con feeds
+            descentralizados, datos de exchanges y mecanismos de agregación que
+            permitan mitigar la manipulación. El oráculo actúa como el “sensor”
+            del sistema: al alcanzar ciertos umbrales, puede habilitar cambios de
+            fase en el Vault.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-white">
+            4.5 Capa de aplicación: dashboard, landing y analytics
+          </h3>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            Sobre los contratos on-chain se construye una capa de aplicación en
+            Next.js, que hace visible el estado de XCoin a cualquier usuario:
+          </p>
+          <ul className="text-sm text-neutral-300 space-y-1 list-disc pl-5">
+            <li>
+              Dashboard técnico con métricas de supply, balances, compras y
+              vesting.
+            </li>
+            <li>Landing con narrativa, tokenomics, roadmap y enlaces clave.</li>
+            <li>
+              Módulo de compra conectando con XCoinSale en red Sepolia (laboratorio).
+            </li>
+            <li>Sección de Analytics que lee eventos on-chain históricos.</li>
+            <li>Secciones de Whitepaper y Tokenomics para documentación.</li>
+          </ul>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            La interacción con la blockchain se realiza mediante ethers.js, y
+            la conexión con wallets sigue el estándar EIP-1193. De esta forma,
+            cualquier usuario puede verificar por sí mismo la coherencia entre
+            lo que ve en la interfaz y lo que sucede en la red.
+          </p>
+        </div>
       </section>
 
       {/* 5. Regla 80/20 */}
