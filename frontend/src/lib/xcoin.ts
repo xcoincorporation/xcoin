@@ -5,6 +5,7 @@ export const ADDRESS = process.env.NEXT_PUBLIC_XCOIN_ADDRESS!;
 export const TREASURY = process.env.NEXT_PUBLIC_TREASURY_ADDR || "";
 export const RPC = process.env.NEXT_PUBLIC_RPC_URL!;
 export const SALE = process.env.NEXT_PUBLIC_SALE_ADDR || "";
+export const VAULT = process.env.NEXT_PUBLIC_XCOIN_VAULT_ADDRESS || "";
 
 /** ABI mínima de lectura del token */
 export const xcoinAbi = [
@@ -154,43 +155,107 @@ export async function readWalletInfo() {
 }
 
 /** Lectura de eventos de compra desde RPC (para Analytics) */
-export async function readSaleEvents() {
+export async function readSaleEvents(maxBlocks: bigint = 1000n) {
   if (!SALE) throw new Error("SALE_ADDR no configurado");
+
   const provider = new ethers.JsonRpcProvider(RPC);
   const iface = new ethers.Interface(saleAbi);
 
-  // Alchemy free tier: máx. 10 bloques por eth_getLogs
-  const latest = await provider.getBlockNumber();
-  const latestBig = BigInt(latest);
-  const fromBig = latestBig > 9n ? latestBig - 9n : 0n;
+  const latestNumber = await provider.getBlockNumber();
+  const latest = BigInt(latestNumber);
 
-  const filter = {
-    address: SALE,
-    topics: [iface.getEvent("TokensPurchased").topicHash],
-    fromBlock: Number(fromBig),
-    toBlock: latest,
-  } as any;
+  // Desde qué bloque empezar (máx. maxBlocks hacia atrás)
+  const from = latest > maxBlocks ? latest - maxBlocks + 1n : 0n;
 
-  const logs = await provider.getLogs(filter);
+  const allEvents: {
+    txHash: string;
+    buyer: string;
+    ethSpent: bigint;
+    tokensBought: bigint;
+    blockNumber: number;
+    timestamp: number;
+  }[] = [];
 
-  const events = await Promise.all(
-    logs.map(async (log) => {
+  // Avanzamos en “ventanas” de 10 bloques por la limitación de Alchemy
+  const step = 10n;
+
+  for (let start = from; start <= latest; start += step) {
+    const end = start + step - 1n > latest ? latest : start + step - 1n;
+
+    const filter = {
+      address: SALE,
+      topics: [iface.getEvent("TokensPurchased").topicHash],
+      fromBlock: Number(start),
+      toBlock: Number(end),
+    } as any;
+
+    const logs = await provider.getLogs(filter);
+
+    // Parsear logs de este tramo
+    for (const log of logs) {
       const parsed = iface.parseLog(log);
       const buyer = parsed.args[0] as string;
       const ethSpent = BigInt(parsed.args[1].toString());
       const tokensBought = BigInt(parsed.args[2].toString());
       const block = await provider.getBlock(log.blockNumber!);
-      return {
+
+      allEvents.push({
         txHash: log.transactionHash,
         buyer,
         ethSpent,
         tokensBought,
         blockNumber: log.blockNumber,
         timestamp: Number(block?.timestamp ?? 0),
-      };
-    })
-  );
+      });
+    }
+  }
 
-  return events;
+  return allEvents;
+
 }
 
+export async function getVestingSnapshot() {
+  // Si falta RPC o VAULT en el .env, devolvemos ceros para no romper el render
+  if (!RPC || !VAULT) {
+    console.warn(
+      "getVestingSnapshot: falta NEXT_PUBLIC_RPC_URL o NEXT_PUBLIC_XCOIN_VAULT_ADDRESS"
+    );
+    return {
+      currentPhase: 0,
+      unlockBps: 0,
+      oracleMarketCap: 0,
+    };
+  }
+
+  // Provider de solo lectura contra Sepolia
+  const provider = new ethers.JsonRpcProvider(RPC);
+
+  // ABI mínima necesaria del Vault
+  const vaultAbi = [
+    "function currentPhase() view returns (uint256)",
+    "function unlockedBps() view returns (uint16)",
+  ];
+
+  const vault = new ethers.Contract(VAULT, vaultAbi, provider);
+
+  // Leemos fase y bps en paralelo
+  const [phaseRaw, bpsRaw] = await Promise.all([
+    vault.currentPhase(),
+    vault.unlockedBps(),
+  ]);
+
+  // Consultamos el oráculo (mock) del frontend
+  const res = await fetch("http://localhost:3000/api/oracle", {
+    cache: "no-store",
+  });
+  const oracleJson = await res.json();
+
+  // OJO: la clave correcta es marketCapUsd
+  const oracleMarketCap = Number(oracleJson.marketCapUsd ?? 0);
+
+  return {
+    currentPhase: Number(phaseRaw),
+    unlockBps: Number(bpsRaw),
+    oracleMarketCap,
+  };
+}

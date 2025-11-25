@@ -4,7 +4,8 @@ import { ethers } from "ethers";
 
 export async function GET() {
   try {
-    const events = await readSaleEvents(0n);
+    // Leemos, por ejemplo, los últimos 1000 bloques
+    const events = await readSaleEvents(1000n);
 
     const enriched = events
       .sort((a, b) => b.blockNumber - a.blockNumber)

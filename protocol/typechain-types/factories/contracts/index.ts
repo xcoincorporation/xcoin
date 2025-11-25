@@ -2,5 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export { XCoinSale__factory } from "./XCoinSale__factory";
+export { XCoinSaleV2__factory } from "./XCoinSaleV2__factory";
 export { XCoinToken__factory } from "./XCoinToken__factory";
 export { XCoinVault__factory } from "./XCoinVault__factory";

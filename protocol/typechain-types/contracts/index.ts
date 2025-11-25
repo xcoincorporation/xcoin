@@ -2,5 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { XCoinSale } from "./XCoinSale";
+export type { XCoinSaleV2 } from "./XCoinSaleV2";
 export type { XCoinToken } from "./XCoinToken";
 export type { XCoinVault } from "./XCoinVault";

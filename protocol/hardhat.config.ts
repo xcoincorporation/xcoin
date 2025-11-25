@@ -25,4 +25,13 @@ const config: HardhatUserConfig = {
   etherscan: { apiKey: process.env.ETHERSCAN_KEY || "" }
 };
 
-export default config;
+export default {
+  networks: {
+    sepolia: {
+      url: process.env.SEPOLIA_RPC_URL!,
+      accounts: [process.env.PRIVATE_KEY!],
+      timeout: 60000                // <- fix
+    }
+  }
+};
+

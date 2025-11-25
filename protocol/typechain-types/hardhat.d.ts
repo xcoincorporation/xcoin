@@ -42,9 +42,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20__factory>;
     getContractFactory(
+      name: "Pausable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Pausable__factory>;
+    getContractFactory(
+      name: "ReentrancyGuard",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ReentrancyGuard__factory>;
+    getContractFactory(
       name: "XCoinSale",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.XCoinSale__factory>;
+    getContractFactory(
+      name: "XCoinSaleV2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.XCoinSaleV2__factory>;
     getContractFactory(
       name: "XCoinToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -90,10 +102,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC20>;
     getContractAt(
+      name: "Pausable",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Pausable>;
+    getContractAt(
+      name: "ReentrancyGuard",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ReentrancyGuard>;
+    getContractAt(
       name: "XCoinSale",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.XCoinSale>;
+    getContractAt(
+      name: "XCoinSaleV2",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.XCoinSaleV2>;
     getContractAt(
       name: "XCoinToken",
       address: string | ethers.Addressable,
@@ -134,9 +161,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC20>;
     deployContract(
+      name: "Pausable",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Pausable>;
+    deployContract(
+      name: "ReentrancyGuard",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ReentrancyGuard>;
+    deployContract(
       name: "XCoinSale",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.XCoinSale>;
+    deployContract(
+      name: "XCoinSaleV2",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.XCoinSaleV2>;
     deployContract(
       name: "XCoinToken",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -182,10 +221,25 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IERC20>;
     deployContract(
+      name: "Pausable",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.Pausable>;
+    deployContract(
+      name: "ReentrancyGuard",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ReentrancyGuard>;
+    deployContract(
       name: "XCoinSale",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.XCoinSale>;
+    deployContract(
+      name: "XCoinSaleV2",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.XCoinSaleV2>;
     deployContract(
       name: "XCoinToken",
       args: any[],

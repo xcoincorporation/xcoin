@@ -20,8 +20,14 @@ export type { IERC20Metadata } from "./@openzeppelin/contracts/token/ERC20/exten
 export { IERC20Metadata__factory } from "./factories/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata__factory";
 export type { IERC20 } from "./@openzeppelin/contracts/token/ERC20/IERC20";
 export { IERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/IERC20__factory";
+export type { Pausable } from "./@openzeppelin/contracts/utils/Pausable";
+export { Pausable__factory } from "./factories/@openzeppelin/contracts/utils/Pausable__factory";
+export type { ReentrancyGuard } from "./@openzeppelin/contracts/utils/ReentrancyGuard";
+export { ReentrancyGuard__factory } from "./factories/@openzeppelin/contracts/utils/ReentrancyGuard__factory";
 export type { XCoinSale } from "./contracts/XCoinSale";
 export { XCoinSale__factory } from "./factories/contracts/XCoinSale__factory";
+export type { XCoinSaleV2 } from "./contracts/XCoinSaleV2";
+export { XCoinSaleV2__factory } from "./factories/contracts/XCoinSaleV2__factory";
 export type { XCoinToken } from "./contracts/XCoinToken";
 export { XCoinToken__factory } from "./factories/contracts/XCoinToken__factory";
 export type { XCoinVault } from "./contracts/XCoinVault";

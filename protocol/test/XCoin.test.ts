@@ -1,91 +1,73 @@
-import { ethers } from "hardhat";
 import { expect } from "chai";
-
-/** Helpers */
-function toRaw(human: string, decimals: number) {
-  return ethers.parseUnits(human, decimals);
-}
+import { ethers } from "hardhat";
 
 describe("XCoinToken", () => {
-  async function deployWithArgs() {
-    const [owner, treasury, vault, alt] = await ethers.getSigners();
-    const decimals = 18; // ajustá si tu token no es 18
-    const initialSupply = toRaw("1000000", decimals); // 1,000,000 * 10^18
+  let token: any;
+  let owner: any;
+  let tesoreria: any;
+  let vaultUsuarios: any;
+  let user1: any;
+  let user2: any;
+
+  // Supply "entero" que pasamos al constructor (ej: 1_000_000)
+  const initialSupplyTokens = 1_000_000n;
+
+  beforeEach(async () => {
+    [owner, tesoreria, vaultUsuarios, user1, user2] = await ethers.getSigners();
 
     const Token = await ethers.getContractFactory("XCoinToken");
-    const token = await Token.deploy(initialSupply, treasury.address, vault.address);
+    token = await Token.deploy(
+      initialSupplyTokens,
+      tesoreria.address,
+      vaultUsuarios.address
+    );
     await token.waitForDeployment();
-
-    return { token, owner, treasury, vault, alt, decimals, initialSupply };
-  }
-
-  async function findInitialHolder(token: any, candidates: string[]) {
-    for (const a of candidates) {
-      const bal = await token.balanceOf(a);
-      if (bal > 0n) return a;
-    }
-    return null;
-  }
-
-  it("despliega con supply total en alguna de las cuentas previstas", async () => {
-    const { token, owner, treasury, vault, decimals, initialSupply } = await deployWithArgs();
-
-    const total = await token.totalSupply();
-    expect(total).to.equal(initialSupply);
-
-    const holder = await findInitialHolder(token, [owner.address, treasury.address, vault.address]);
-    expect(holder, "no se encontró el tenedor inicial").to.not.equal(null);
-
-    const holderBal = await token.balanceOf(holder!);
-    expect(holderBal).to.equal(total);
   });
 
-  it("transferencia del 20% desde el tenedor inicial hacia Tesorería (si ya es Tesorería, usa cuenta alternativa)", async () => {
-    const { token, owner, treasury, vault, alt, initialSupply } = await deployWithArgs();
+  it("despliega con supply total y distribucion 80/20 correcta", async () => {
+    const decimals: bigint = BigInt(await token.decimals());
+    const expectedSupply = initialSupplyTokens * 10n ** decimals;
 
-    // Detectar el tenedor inicial
-    const holderAddr = await findInitialHolder(token, [owner.address, treasury.address, vault.address]);
-    expect(holderAddr).to.not.equal(null);
+    const totalSupply = await token.totalSupply();
+    const balanceVault = await token.balanceOf(vaultUsuarios.address);
+    const balanceTreasury = await token.balanceOf(tesoreria.address);
 
-    const amount20 = (initialSupply * 20n) / 100n;
+    // Supply total correcto
+    expect(totalSupply).to.equal(expectedSupply);
 
-    // Si el tenedor inicial ya es la Tesorería, usamos alt como “destino de prueba”
-    const dest = (holderAddr!.toLowerCase() === treasury.address.toLowerCase())
-      ? alt.address
-      : treasury.address;
-
-    // Enlazar el contrato con el signer correcto
-    const signer = await ethers.getImpersonatedSigner(holderAddr!);
-    const tokenFromHolder = token.connect(signer);
-
-    const balBeforeHolder = await token.balanceOf(holderAddr!);
-    const balBeforeDest = await token.balanceOf(dest);
-
-    await (await tokenFromHolder.transfer(dest, amount20)).wait();
-
-    const balAfterHolder = await token.balanceOf(holderAddr!);
-    const balAfterDest = await token.balanceOf(dest);
-
-    expect(balAfterHolder).to.equal(balBeforeHolder - amount20);
-    expect(balAfterDest).to.equal(balBeforeDest + amount20);
+    // 80% al vault de usuarios, 20% a Tesoreria
+    expect(balanceVault).to.equal((expectedSupply * 80n) / 100n);
+    expect(balanceTreasury).to.equal((expectedSupply * 20n) / 100n);
+    expect(balanceVault + balanceTreasury).to.equal(expectedSupply);
   });
 
-  it("airdrop multipunto desde el tenedor inicial", async () => {
-    const { token, owner, treasury, vault, alt, decimals } = await deployWithArgs();
+  it("permite un airdrop multipunto desde la Tesoreria", async () => {
+    const decimals: bigint = BigInt(await token.decimals());
 
-    const holderAddr = await findInitialHolder(token, [owner.address, treasury.address, vault.address]);
-    expect(holderAddr).to.not.equal(null);
+    // Montos de airdrop (en unidades humanas)
+    const amount1Human = "10";   // 10 XCOIN
+    const amount2Human = "5.5";  // 5.5 XCOIN
 
-    const signer = await ethers.getImpersonatedSigner(holderAddr!);
-    const t = token.connect(signer);
+    const amount1 = ethers.parseUnits(amount1Human, Number(decimals));
+    const amount2 = ethers.parseUnits(amount2Human, Number(decimals));
 
-    const a = treasury.address;      // destino 1
-    const b = alt.address;           // destino 2
+    const initialTreasuryBalance = await token.balanceOf(tesoreria.address);
 
-    await (await t.transfer(a, toRaw("10", decimals))).wait();
-    await (await t.transfer(b, toRaw("5", decimals))).wait();
+    // Tesoreria hace "airdrop" a user1 y user2
+    await token.connect(tesoreria).transfer(user1.address, amount1);
+    await token.connect(tesoreria).transfer(user2.address, amount2);
 
-    expect(await token.balanceOf(a)).to.equal(toRaw("10", decimals));
-    expect(await token.balanceOf(b)).to.equal(toRaw("5", decimals));
+    const finalTreasuryBalance = await token.balanceOf(tesoreria.address);
+    const balanceUser1 = await token.balanceOf(user1.address);
+    const balanceUser2 = await token.balanceOf(user2.address);
+
+    // Verificamos que los usuarios recibieron exactamente lo enviado
+    expect(balanceUser1).to.equal(amount1);
+    expect(balanceUser2).to.equal(amount2);
+
+    // La Tesoreria redujo su saldo por el total airdropeado
+    expect(finalTreasuryBalance).to.equal(
+      initialTreasuryBalance - amount1 - amount2
+    );
   });
 });

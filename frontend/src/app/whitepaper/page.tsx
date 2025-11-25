@@ -1,6 +1,10 @@
-export default function WhitepaperPage() {
+import { getVestingSnapshot } from "@/lib/xcoin";
+
+export default async function WhitepaperPage() {
+   const { currentPhase, unlockBps, oracleMarketCap } =
+    await getVestingSnapshot();
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 space-y-10 text-neutral-200">
+    <div className="mx-auto max-w-5xl px-4 py-10">
       {/* HERO */}
       <header className="space-y-4">
         <div className="inline-flex items-center gap-2 rounded-full border border-[#f5c84b]/40 bg-[#141417] px-3 py-1 text-xs text-[#f5c84b]">
@@ -560,12 +564,12 @@ export default function WhitepaperPage() {
         </div>
       </section>
 
-      {/* 5. Regla 80/20 */}
+        {/* 5. Regla 80/20 */}
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-white">
           5. Regla 80/20 en detalle
         </h2>
-        <p className="text-sm text-neutral-300">
+        <p className="text-sm text-neutral-300 leading-relaxed">
           La lógica 80/20 se implementa desde el deploy inicial:
         </p>
         <ul className="text-sm text-neutral-300 space-y-1 list-disc pl-5">
@@ -583,7 +587,7 @@ export default function WhitepaperPage() {
         <h2 className="text-xl font-semibold text-white">
           6. Desbloqueo por hitos de Market Cap
         </h2>
-        <p className="text-sm text-neutral-300">
+        <p className="text-sm text-neutral-300 leading-relaxed">
           El Vault controla qué porcentaje del saldo bloqueado está disponible
           para liberar en función de hitos de Market Cap publicados por el
           oráculo. Cada fase vincula:
@@ -600,7 +604,7 @@ export default function WhitepaperPage() {
         <h2 className="text-xl font-semibold text-white">
           7. Alcance de este laboratorio
         </h2>
-        <p className="text-sm text-neutral-300">
+        <p className="text-sm text-neutral-300 leading-relaxed">
           Todo lo desplegado en Sepolia es un entorno experimental. Los
           contratos, precios y reglas pueden cambiar, migrarse o eliminarse sin
           previo aviso. El objetivo es iterar sobre el modelo técnico, UX/UI y
@@ -609,16 +613,46 @@ export default function WhitepaperPage() {
         </p>
       </section>
 
-      {/* 8. Aviso legal */}
+            {/* 8. Aviso legal */}
       <section className="space-y-3 border-t border-white/5 pt-6">
         <h2 className="text-xl font-semibold text-white">8. Aviso</h2>
-        <p className="text-xs text-neutral-400 leading-relaxed">
+        <p className="text-sm text-neutral-300 leading-relaxed">
           Este documento no constituye recomendación de inversión, ni oferta
           pública, ni asesoramiento financiero. XCoin es un experimento
           educativo/técnico en redes de prueba. Cualquier versión futura en
           mainnet deberá contar con documentación actualizada, auditoría externa
           y un marco legal específico según la jurisdicción aplicable.
         </p>
+
+        {/* Estado On-Chain del Vesting Engine */}
+        <h3 className="text-lg font-semibold text-white">
+          Estado actual del Vesting (on-chain)
+        </h3>
+
+        <p className="text-sm text-neutral-300">
+          Datos obtenidos desde el contrato Vault en red Sepolia.
+        </p>
+
+        <div className="rounded-2xl border border-white/10 p-4 bg-black/40 space-y-2">
+          <div className="text-neutral-400 text-sm">Fase actual:</div>
+          <div className="text-white font-semibold text-xl">
+            {currentPhase}
+          </div>
+
+          <div className="text-neutral-400 text-sm pt-2">
+            MarketCap reportado por el Oráculo:
+          </div>
+          <div className="text-white font-semibold">
+            {oracleMarketCap
+              ? `${oracleMarketCap.toLocaleString()} USD`
+              : "Cargando..."}
+          </div>
+
+          <div className="text-neutral-400 text-sm pt-2">Unlock BPS:</div>
+          <div className="text-white font-semibold">
+            {unlockBps / 100}% liberado
+          </div>
+        </div>
       </section>
     </div>
   );

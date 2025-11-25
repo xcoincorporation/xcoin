@@ -7,40 +7,68 @@ async function main() {
     throw new Error("Falta VAULT_ADDR en el .env");
   }
 
-  const phases = [
-    { cap: 1_000_000, bps: 1000  }, // 10%
-    { cap: 2_000_000, bps: 2000  }, // 20%
-    { cap: 4_000_000, bps: 3500  }, // 35%
-    { cap: 6_000_000, bps: 5000  }, // 50%
-    { cap: 10_000_000, bps: 7500 }, // 75%
-    { cap: 20_000_000, bps: 10000}, // 100%
-  ];
+  console.log("Usando XCoinVault en:", vaultAddr);
 
-  const [deployer] = await ethers.getSigners();
-  console.log("Deployer:", deployer.address);
+  const vault = await ethers.getContractAt("XCoinVault", vaultAddr);
 
-  const vault = await ethers.getContractAt("XCoinVault", vaultAddr, deployer);
+  const existing = await vault.phasesLength();
+  const existingLen = Number(existing);
 
-  // 1) Limpia fases previas (si tu contrato lo permite, sino lo omitimos)
-  const currentLength = await vault.phasesLength();
-  console.log("Fases actuales:", Number(currentLength));
-
-  if (Number(currentLength) > 0) {
-    console.log("⚠️ Eliminación de fases NO soportada en esta versión del Vault.");
-    console.log("   → Simplemente agregamos nuevas fases al final.");
+  if (existingLen > 0) {
+    console.log(
+      `⚠ El vault ya tiene ${existingLen} fases configuradas. ` +
+        "Este script está diseñado para inicializar un vault limpio. " +
+        "Volvé a desplegar el contrato si querés rehacer las fases."
+    );
+    return;
   }
 
-  // 2) Agregar nuevas fases
-  console.log("\n== Agregando fases institucionales ==\n");
+  // ============================
+  // Curva institucional 2025
+  // MarketCap en USD (ej: 1_000_000 = 1M)
+  // unlockBps = porcentaje acumulado desbloqueado (en basis points)
+  // ============================
+  const phases: { cap: number; bps: number }[] = [
+    { cap: 1_000_000, bps: 500 },   //  5%  – Adopción inicial
+    { cap: 2_000_000, bps: 1500 },  // 15%  – Validación de mercado
+    { cap: 4_000_000, bps: 3000 },  // 30%  – Crecimiento orgánico
+    { cap: 8_000_000, bps: 4500 },  // 45%  – Expansión
+    { cap: 15_000_000, bps: 6000 }, // 60%  – Escala
+    { cap: 25_000_000, bps: 7500 }, // 75%  – Maduración
+    { cap: 40_000_000, bps: 9000 }, // 90%  – Consolidación
+    { cap: 60_000_000, bps: 10_000 } // 100% – Full unlock
+  ];
+
+  console.log("\nConfigurando fases de vesting...");
+  console.log("--------------------------------");
+
+  let lastCap = 0;
+  let lastBps = 0;
 
   for (let i = 0; i < phases.length; i++) {
     const p = phases[i];
+
+    if (p.cap <= lastCap) {
+      throw new Error(
+        `Cap no creciente en fase ${i}: ${p.cap} <= ${lastCap}`
+      );
+    }
+    if (p.bps <= lastBps) {
+      throw new Error(
+        `BPS no creciente en fase ${i}: ${p.bps} <= ${lastBps}`
+      );
+    }
+
+    lastCap = p.cap;
+    lastBps = p.bps;
 
     const tx = await vault.addPhase(p.cap, p.bps);
     await tx.wait();
 
     console.log(
-      `Fase ${i} creada → cap=${p.cap.toLocaleString()} USD, unlock=${p.bps / 100}%`
+      `Fase ${i} creada → cap=${p.cap.toLocaleString()} USD, unlock=${
+        p.bps / 100
+      }%`
     );
   }
 
