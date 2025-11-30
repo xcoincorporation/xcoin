@@ -3,12 +3,13 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 /**
- * Envía XCOIN desde el DEPLOYER al contrato de venta.
- * Usamos el deployer porque:
- *  - tiene ETH para gas
- *  - ya tiene XCOIN (por los claim del Vault)
+ * Envía XCOIN desde una cuenta con saldo (normalmente el deployer)
+ * al contrato de venta XCoinSaleV2.
+ *
+ * Usa:
+ *  - CONTRACT_ADDR: address del XCoinToken
+ *  - SALE_ADDR:     address del contrato XCoinSaleV2
  */
-
 async function main() {
   const tokenAddr = process.env.CONTRACT_ADDR;
   const saleAddr = process.env.SALE_ADDR;
@@ -17,38 +18,45 @@ async function main() {
     throw new Error("Faltan CONTRACT_ADDR o SALE_ADDR en el .env");
   }
 
-  const [deployer] = await ethers.getSigners();
+  const [sender] = await ethers.getSigners();
 
-  console.log("Deployer :", deployer.address);
-  console.log("Token    :", tokenAddr);
-  console.log("Sale     :", saleAddr);
-
-  const token = await ethers.getContractAt("XCoinToken", tokenAddr, deployer);
+  const token = await ethers.getContractAt("XCoinToken", tokenAddr, sender);
 
   const decimals = await token.decimals();
-  const balDeployer = await token.balanceOf(deployer.address);
+  const symbol = await token.symbol();
 
-  console.log("Balance deployer actual:", ethers.formatUnits(balDeployer, decimals));
+  // Monto a transferir al contrato de venta: 20_000 XCOIN (ajustable)
+  const amountTokens = 20_000n;
+  const amountUnits = amountTokens * 10n ** BigInt(decimals);
 
-  // Cantidad a enviar al contrato de venta (ajustable)
-  // Usamos 500 XCOIN para test
-  const amount = ethers.parseUnits("500", decimals);
+  const balanceBefore = await token.balanceOf(sender.address);
 
-  if (balDeployer < amount) {
-    throw new Error("El deployer no tiene suficientes XCOIN para enviar 500.");
+  console.log("Sender          :", sender.address);
+  console.log("Token           :", tokenAddr, `(${symbol})`);
+  console.log("Sale contract   :", saleAddr);
+  console.log("Balance sender  :", ethers.formatUnits(balanceBefore, decimals));
+  console.log("Amount to fund  :", ethers.formatUnits(amountUnits, decimals));
+
+  if (balanceBefore < amountUnits) {
+    throw new Error("Saldo insuficiente de XCOIN para fondear la venta");
   }
 
-  console.log(`Transfiriendo ${ethers.formatUnits(amount, decimals)} XCOIN al contrato de venta...`);
-
-  const tx = await token.transfer(saleAddr, amount);
+  const tx = await token.transfer(saleAddr, amountUnits);
+  console.log("TX enviada:", tx.hash);
   await tx.wait();
+  console.log("✔ Venta fondeada correctamente.");
 
-  const balDeployerAfter = await token.balanceOf(deployer.address);
-  const balSale = await token.balanceOf(saleAddr);
+  const balanceAfter = await token.balanceOf(sender.address);
+  const balanceSale = await token.balanceOf(saleAddr);
 
-  console.log("✔ Transferencia completa.");
-  console.log("Balance deployer después:", ethers.formatUnits(balDeployerAfter, decimals));
-  console.log("Balance XCoinSale        :", ethers.formatUnits(balSale, decimals));
+  console.log(
+    "Balance sender después:",
+    ethers.formatUnits(balanceAfter, decimals)
+  );
+  console.log(
+    "Balance venta          :",
+    ethers.formatUnits(balanceSale, decimals)
+  );
 }
 
 main().catch((e) => {

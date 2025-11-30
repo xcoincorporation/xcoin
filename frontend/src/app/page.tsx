@@ -5,9 +5,10 @@ import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import LandingOracleDashboard from "@/components/LandingOracleDashboard";
 
-import HeaderStatsComponent from "../components/HeaderStats";
-import InvestorCTA from "../components/InvestorCTA";
+import HeaderStatsComponent from "@/components/HeaderStats";
+import InvestorCTA from "@/components/InvestorCTA";
 // Si en algún momento usás TokenomicsCard, descomentalo y úsalo.
 // import TokenomicsCard from "../components/TokenomicsCard";
 
@@ -276,39 +277,19 @@ export default function HomePage() {
       </section>
 
       {/* DASHBOARD PLACEHOLDER */}
-      <section id="dashboard" className="border-t border-neutral-800">
-        <div className="mx-auto max-w-6xl px-4 py-14">
-          <SectionTitle
-            k="Dashboard en vivo"
-            sub="Oráculo, progreso y transparencia"
-          />
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <Stat
-              label="BTC Market Cap (oracle)"
-              value="$ —"
-              sub="Feed pendiente de integrar"
-            />
-            <Stat
-              label="Objetivo XCoin"
-              value="$ —"
-              sub="Definido en whitepaper"
-            />
-            <Stat
-              label="Progreso"
-              value="— %"
-              sub="Promedio móvil anti-manipulación"
-            />
-          </div>
-
-          <div className="mt-6 rounded-2xl border border-neutral-800 p-6 bg-[#121212] text-neutral-300">
-            <p>
-              Aquí conectaremos el contrato de oráculo y el smart contract de
-              desbloqueo. Se mostrará el % alcanzado frente al objetivo, el historial
-              de actualizaciones del oráculo y el estado de cada fase. También podremos
-              exponer eventos on-chain en tiempo real.
+      
+      <section className="border-t border-neutral-900 bg-black/40">
+        <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-16 md:px-0">
+          <div>
+            <h2 className="text-2xl font-semibold text-white">
+              Dashboard en vivo
+            </h2>
+            <p className="mt-1 text-sm text-neutral-400">
+              Oráculo, progreso y transparencia del motor de vesting en testnet.
             </p>
           </div>
+
+          <LandingOracleDashboard />
         </div>
       </section>
 

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { getReadContract } from "../lib/xcoin";
+import { getReadContract } from "@/lib/xcoin";
 
 const TREASURY_ADDR = process.env.NEXT_PUBLIC_TREASURY_ADDR!;
 

@@ -1,5 +1,7 @@
+// protocol/scripts/syncMarketCap.ts
 import { ethers } from "hardhat";
 import * as dotenv from "dotenv";
+
 dotenv.config();
 
 /**
@@ -18,15 +20,16 @@ async function main() {
   }
 
   const marketCapFromEnv = process.env.MARKET_CAP_USD;
-  const marketCapUsd = marketCapFromEnv
+  const marketCapUsd: bigint = marketCapFromEnv
     ? BigInt(marketCapFromEnv)
     : 1_000_000n; // valor por defecto: 1M USD
 
   const [oracle] = await ethers.getSigners();
 
-  console.log("Oracle signer :", oracle.address);
-  console.log("Vault address :", vaultAddr);
-  console.log("MarketCap USD :", marketCapUsd.toString());
+  console.log("=== XCoinVault syncMarketCap (laboratorio) ===");
+  console.log("Vault:   ", vaultAddr);
+  console.log("Signer:  ", oracle.address);
+  console.log("MC USD:  ", marketCapUsd.toString());
 
   const vault = await ethers.getContractAt("XCoinVault", vaultAddr, oracle);
 
@@ -39,8 +42,15 @@ async function main() {
 
   console.log("\n== Ejecutando syncMarketCap(...) ==");
   const tx = await vault.syncMarketCap(marketCapUsd);
-  await tx.wait();
-  console.log("syncMarketCap confirmado en la red.");
+  const receipt = await tx.wait();
+
+  if (!receipt) {
+    throw new Error("La transacción no se confirmó (receipt null)");
+  }
+
+  console.log(
+    `Tx confirmada en bloque ${receipt.blockNumber}, gasUsed=${receipt.gasUsed.toString()}`
+  );
 
   const phaseAfter = await vault.currentPhase();
   const bpsAfter = await vault.unlockedBps();

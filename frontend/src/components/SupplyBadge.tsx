@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { readBasics, toHuman } from "../lib/xcoin";
+import { readBasics, toHuman } from "@/lib/xcoin";
 import { useToast } from "@/hooks/useToast";
 
 /** Anchora el panel al botón, sin solaparse con el navbar */

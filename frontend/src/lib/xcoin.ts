@@ -6,6 +6,7 @@ export const TREASURY = process.env.NEXT_PUBLIC_TREASURY_ADDR || "";
 export const RPC = process.env.NEXT_PUBLIC_RPC_URL!;
 export const SALE = process.env.NEXT_PUBLIC_SALE_ADDR || "";
 export const VAULT = process.env.NEXT_PUBLIC_XCOIN_VAULT_ADDRESS || "";
+export const VAULT_ADDR = process.env.NEXT_PUBLIC_XCOIN_VAULT_ADDRESS || "0x8924274B9b80138C6a71Cc88082D2f2054756764";
 
 /** ABI mínima de lectura del token */
 export const xcoinAbi = [
@@ -16,11 +17,21 @@ export const xcoinAbi = [
   "function balanceOf(address) view returns (uint256)",
 ];
 
-/** ABI mínima del contrato de venta (OJO: nombre correcto) */
+// Dirección del token ERC-20 XCoin en Sepolia
+export const TOKEN_ADDR =
+  process.env.NEXT_PUBLIC_TOKEN_ADDR ??
+  "0x4331ff5eb6cf5aa20507de447743f0623508b046"; // <-- tu dirección real
+
+// Dirección de la tesorería
+export const TREASURY_ADDR =
+  process.env.NEXT_PUBLIC_TREASURY_ADDR ??
+  "0x4331ff5eb6cf5aa20507de447743f0623508b046"; // si usas la misma  
+
+/** ABI mínima del contrato de venta (alineado con XCoinSaleV2) */
 export const saleAbi = [
-  "function buy() payable",
-  "function pricePerTokenWei() view returns (uint256)",
-  "event TokensPurchased(address indexed buyer, uint256 ethSpent, uint256 tokensBought)",
+  "function buy() external payable",
+  "function pricePerTokenWeiFixed() view returns (uint256)",
+  "event Bought(address indexed buyer, uint256 ethSpent, uint256 tokensOut)",
 ];
 
 /** Contrato sólo-lectura del token */
@@ -64,7 +75,7 @@ export async function readSaleInfo() {
   const sale = getSaleReadContract();
 
   const [priceWeiRaw, decimals, saleBalance] = await Promise.all([
-    sale.pricePerTokenWei(),
+    sale.pricePerTokenWeiFixed(),    // ✅ nombre correcto
     token.decimals(),
     token.balanceOf(SALE),
   ]);
@@ -128,7 +139,7 @@ export async function getSaleWithSigner() {
 export async function buyXCoinWithEth(amountEth: string) {
   const sale = await getSaleWithSigner();
   const value = ethers.parseEther(amountEth);
-  const tx = await sale.buy({ value });
+  const tx = await sale.buy({ value });     // ✅ coincide con `function buy() external payable`
   return tx;
 }
 
@@ -184,7 +195,7 @@ export async function readSaleEvents(maxBlocks: bigint = 1000n) {
 
     const filter = {
       address: SALE,
-      topics: [iface.getEvent("TokensPurchased").topicHash],
+      topics: [iface.getEvent("Bought").topicHash],  // ✅ evento correcto
       fromBlock: Number(start),
       toBlock: Number(end),
     } as any;
@@ -211,7 +222,6 @@ export async function readSaleEvents(maxBlocks: bigint = 1000n) {
   }
 
   return allEvents;
-
 }
 
 export async function getVestingSnapshot() {
@@ -230,7 +240,6 @@ export async function getVestingSnapshot() {
   // Provider de solo lectura contra Sepolia
   const provider = new ethers.JsonRpcProvider(RPC);
 
-  // ABI mínima necesaria del Vault
   const vaultAbi = [
     "function currentPhase() view returns (uint256)",
     "function unlockedBps() view returns (uint16)",
@@ -244,14 +253,25 @@ export async function getVestingSnapshot() {
     vault.unlockedBps(),
   ]);
 
-  // Consultamos el oráculo (mock) del frontend
-  const res = await fetch("http://localhost:3000/api/oracle", {
-    cache: "no-store",
-  });
-  const oracleJson = await res.json();
+  // Consultamos el oráculo HTTP del backend Next.js
+  let oracleMarketCap = 0;
+  try {
+    const res = await fetch("/api/oracle", {
+      cache: "no-store",
+    });
 
-  // OJO: la clave correcta es marketCapUsd
-  const oracleMarketCap = Number(oracleJson.marketCapUsd ?? 0);
+    if (res.ok) {
+      const oracleJson = await res.json();
+      oracleMarketCap = Number(oracleJson.marketCapUsd ?? 0);
+    } else {
+      console.warn(
+        "getVestingSnapshot: /api/oracle devolvió HTTP",
+        res.status
+      );
+    }
+  } catch (err) {
+    console.warn("getVestingSnapshot: error consultando /api/oracle", err);
+  }
 
   return {
     currentPhase: Number(phaseRaw),
@@ -259,3 +279,4 @@ export async function getVestingSnapshot() {
     oracleMarketCap,
   };
 }
+

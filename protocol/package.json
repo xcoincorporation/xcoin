@@ -7,7 +7,6 @@
     "test": "test"
   },
   "scripts": {
-
     "deploy:vault:sepolia": "hardhat run scripts/deployVault.ts --network sepolia",
     "deploy:sale:sepolia": "hardhat run scripts/deploySale.ts --network sepolia",
     "init:vault:sepolia": "hardhat run scripts/initVault.ts --network sepolia",
@@ -39,11 +38,13 @@
     "@types/chai": "^4.3.11",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.30",
+    "baseline-browser-mapping": "^2.8.32",
     "chai": "^4.4.1",
     "cross-env": "^10.1.0",
     "dotenv": "^16.4.5",
     "hardhat": "^2.27.0",
     "hardhat-gas-reporter": "^2.3.0",
+    "node-fetch": "^3.3.2",
     "solidity-coverage": "^0.8.16",
     "ts-node": "^10.9.2",
     "typechain": "^8.3.2",

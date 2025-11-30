@@ -1,0 +1,115 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "marketCapUsd",
+          "type": "uint256"
+        }
+      ],
+      "name": "MarketCapSynced",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "currentPhase",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getInfo",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "phase",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint32",
+          "name": "unlockedBps",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "marketCapUsd",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getNextThreshold",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getVestingCurve",
+      "outputs": [
+        {
+          "internalType": "uint256[6]",
+          "name": "thresholds",
+          "type": "uint256[6]"
+        },
+        {
+          "internalType": "uint32[6]",
+          "name": "bps",
+          "type": "uint32[6]"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "marketCapUsd",
+          "type": "uint256"
+        }
+      ],
+      "name": "syncMarketCap",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unlockedBps",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+}

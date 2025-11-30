@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getReadContract, readBasics, toHuman } from "../../lib/xcoin";
+import { getReadContract, readBasics, toHuman } from "@/lib/xcoin";
 import DashboardSalePanel from "@/components/DashboardSalePanel";
 import DashboardWalletPanel from "@/components/DashboardWalletPanel";
 import SaleAdminPanel from "@/components/SaleAdminPanel";
+import { VestingCard } from "@/components/VestingCard";
+
 
 type Basics = Awaited<ReturnType<typeof readBasics>>;
 type LoadState = "idle" | "connecting" | "refreshing";
@@ -15,6 +17,14 @@ export default function DashboardPage() {
   const [balance, setBalance] = useState<bigint | null>(null);
   const [state, setState] = useState<LoadState>("idle");
   const [error, setError] = useState<string | null>(null);
+  return (
+    <div className="space-y-10 px-4 md:px-0">
+      <DashboardSalePanel />
+      <VestingCard />
+    </div>
+  );
+
+
 
   // Carga básica del token (nombre, símbolo, supply, tesorería, etc.)
   useEffect(() => {

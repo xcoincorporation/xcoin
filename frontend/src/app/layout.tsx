@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import SupplyBadge from "../components/SupplyBadge";
+import SupplyBadge from "@/components/SupplyBadge";
 import { ToastProvider } from "@/hooks/useToast";
 import Link from "next/link";
 

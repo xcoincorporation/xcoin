@@ -1,6 +1,6 @@
 "use client"; 
 import { useEffect, useState } from "react"; 
-import { getReadContract } from "../lib/xcoin"; 
+import { getReadContract } from "@/lib/xcoin"; 
 import Skeleton from "./ui/Skeleton"; 
 
 export default function HeaderStats() 
