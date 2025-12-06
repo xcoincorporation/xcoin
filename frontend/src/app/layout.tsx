@@ -5,7 +5,6 @@ import SupplyBadge from "@/components/SupplyBadge";
 import { ToastProvider } from "@/hooks/useToast";
 import Link from "next/link";
 
-
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
@@ -16,67 +15,77 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className="bg-graphite text-silver">
+    <html lang="es" className="bg-[#05060a] text-silver">
       <head>
         <link rel="icon" href="/xcoin-logo.png" />
-        <meta name="theme-color" content="#1B1B1B" />
+        <meta name="theme-color" content="#05060a" />
       </head>
 
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-[#f5c84b]/30`}>
-        {/* El provider debe envolver TODO para habilitar toasts en cualquier parte */}
+      <body
+        className="min-h-screen bg-[#020617] bg-[radial-gradient(circle_at_top,_#0f172a_0,_#020617_45%,_#000_100%)] text-slate-50 antialiased"
+      >
+        {/* Glow de fondo global */}
+        <div className="pointer-events-none fixed inset-x-0 top-0 z-0 h-64 bg-gradient-to-b from-blue-500/25 via-cyan-400/10 to-transparent blur-3xl" />
+        <div className="pointer-events-none fixed inset-y-0 right-[-20%] z-0 w-72 bg-blue-500/10 blur-3xl" />
+
         <ToastProvider>
-          {/* NAVBAR */}
-          <header className="sticky top-0 z-50 bg-[#0f0f10]/80 backdrop-blur border-b border-white/5 h-14">
-          <div className="mx-auto max-w-6xl px-4 h-full flex items-center justify-between">
-            {/* izquierda: brand + links */}
-            <div className="flex items-center gap-8">
-              {/* Brand / Inicio */}
-              <Link
-                href="/"
-                className="text-sm font-semibold text-white hover:text-gold transition"
-              >
-                XCoin
-              </Link>
+          <div className="relative z-10 flex min-h-screen flex-col">
+            {/* NAVBAR */}
+            <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl shadow-[0_0_40px_rgba(15,23,42,0.9)]">
+              <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
+                {/* izquierda: brand + links */}
+                <div className="flex items-center gap-8">
+                  {/* Brand / Inicio */}
+                  <Link
+                    href="/"
+                    className="bg-gradient-to-r from-blue-300 via-cyan-200 to-blue-400 bg-clip-text text-sm font-semibold text-transparent drop-shadow-[0_0_12px_rgba(56,189,248,0.6)]"
+                  >
+                    XCoin
+                  </Link>
 
-              <nav className="flex items-center gap-6 text-sm text-neutral-200">
-                <Link href="/whitepaper" className="hover:text-gold transition">
-                  Whitepaper
-                </Link>
-                <Link href="/tokenomics" className="hover:text-gold transition">
-                  Tokenomics
-                </Link>
-                <Link href="/oraculo" className="hover:text-gold transition">
-                  Oráculo
-                </Link>
-                <Link href="/dashboard" className="hover:text-gold transition">
-                  Dashboard
-                </Link>
-                <Link href="/buy" className="hover:text-gold transition">
-                  Comprar (demo)
-                </Link>
-                <Link href="/roadmap" className="hover:text-gold transition">
-                  Roadmap
-                </Link>
-                <Link href="/whitelist" className="hover:text-gold transition">
-                  Whitelist
-                </Link>
-                <Link href="/analytics" className="hover:text-gold transition">
-                  Analytics
-                </Link>
-              </nav>
-            </div>
+                  <nav className="flex items-center gap-6 text-sm text-neutral-200">
+                    <Link href="/whitepaper" className="hover:text-[#38bdf8] transition">
+                      Whitepaper
+                    </Link>
+                    <Link href="/tokenomics" className="hover:text-[#38bdf8] transition">
+                      Tokenomics
+                    </Link>
+                    <Link href="/oraculo" className="hover:text-[#38bdf8] transition">
+                      Oráculo
+                    </Link>
+                    <Link href="/dashboard" className="hover:text-[#38bdf8] transition">
+                      Dashboard
+                    </Link>
+                    <Link href="/buy" className="hover:text-[#38bdf8] transition">
+                      Comprar (demo)
+                    </Link>
+                    <Link href="/roadmap" className="hover:text-[#38bdf8] transition">
+                      Roadmap
+                    </Link>
+                    <Link href="/whitelist" className="hover:text-[#38bdf8] transition">
+                      Whitelist
+                    </Link>
+                    <Link href="/analytics" className="hover:text-[#38bdf8] transition">
+                      Analytics
+                    </Link>
+                  </nav>
+                </div>
 
-            {/* derecha: supply / otros controles (lo que ya tengas) */}
-            {/* ... */}
+                {/* derecha: badge de supply / controles */}
+                <div className="hidden items-center gap-3 md:flex">
+                  <SupplyBadge />
+                </div>
+              </div>
+            </header>
+
+            {/* CONTENIDO */}
+            <main className="pb-12">{children}</main>
+
+            {/* FOOTER */}
+            <footer className="mt-12 border-t border-neutral-800/80 bg-black/40 py-4 text-center text-xs text-neutral-500">
+              © {new Date().getFullYear()} XCoin Corporation — El otro lado del bloque.
+            </footer>
           </div>
-        </header>
-
-
-          <main>{children}</main>
-
-          <footer className="text-center text-xs text-neutral-500 py-4 border-t border-neutral-800 mt-12">
-            © {new Date().getFullYear()} XCoin Corporation — El otro lado del bloque.
-          </footer>
         </ToastProvider>
       </body>
     </html>

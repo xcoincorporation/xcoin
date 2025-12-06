@@ -47,7 +47,8 @@ export default function HomePage() {
   const prefersReduced = useReducedMotion();
 
   return (
-    <main className="min-h-screen bg-graphite text-slate-100">
+  //<main className="min-h-screen bg-graphite text-slate-100">
+    <main className="min-h-screen bg-[#020617] bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.16),transparent_55%),radial-gradient(circle_at_bottom,_rgba(129,140,248,0.16),transparent_55%)] text-slate-50">
       {/* NAVBAR */}
       <header className="sticky top-0 backdrop-blur bg-black/40 border-b border-neutral-800 z-50">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
@@ -97,7 +98,8 @@ export default function HomePage() {
       </header>
 
       {/* HERO */}
-      <section className="relative overflow-hidden">
+      
+      <section className="py-16 border-t border-slate-800/70 bg-slate-900/40 backdrop-blur">
         <div className="mx-auto max-w-6xl px-4 py-16 grid md:grid-cols-2 gap-12 items-center">
           {/* Texto */}
           <motion.div
@@ -226,17 +228,14 @@ export default function HomePage() {
 
       {/* TOKENOMICS */}
       <section id="tokenomics" className="border-t border-neutral-800 bg-[#161616]">
-        <section className="mx-auto max-w-6xl px-4 mt-10">
-          <TreasuryDonut />
-        </section>
-
         <div className="mx-auto max-w-6xl px-4 py-14">
           <SectionTitle
             k="Tokenomics 80/20"
             sub="Diseñado para acumulación responsable"
           />
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-10 items-start">
+            {/* Columna izquierda: tarjetas de texto */}
             <div className="space-y-3 text-neutral-300">
               <div className="rounded-xl bg-carbon p-4 border border-neutral-700">
                 <div className="text-slate-100 font-semibold">Distribución inicial</div>
@@ -257,24 +256,32 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-neutral-700 p-6 bg-linear-to-br from-[#2C2C2C] to-[#1f1f1f]">
-              <div className="text-slate-100 font-semibold mb-2">
-                Fases de desbloqueo (ejemplo)
+            {/* Columna derecha: donut + fases */}
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-neutral-700 p-4 bg-carbon">
+                <TreasuryDonut />
               </div>
-              <ul className="space-y-3 text-neutral-300 text-sm">
-                <li>• Fase 1 — 10% del objetivo: libera 10% de cada tenencia</li>
-                <li>• Fase 2 — 25% del objetivo: libera +15%</li>
-                <li>• Fase 3 — 50% del objetivo: libera +25%</li>
-                <li>• Fase 4 — 75% del objetivo: libera +25%</li>
-                <li>• Fase 5 — 100% del objetivo: libera el resto</li>
-              </ul>
-              <p className="mt-4 text-xs text-neutral-400">
-                *Ejemplo de referencia. Los porcentajes finales se fijan en el whitepaper.
-              </p>
+
+              <div className="rounded-2xl border border-neutral-700 p-6 bg-linear-to-br from-[#2C2C2C] to-[#1f1f1f]">
+                <div className="text-slate-100 font-semibold mb-2">
+                  Fases de desbloqueo (ejemplo)
+                </div>
+                <ul className="space-y-3 text-neutral-300 text-sm">
+                  <li>• Fase 1 — 10% del objetivo: libera 10% de cada tenencia</li>
+                  <li>• Fase 2 — 25% del objetivo: libera +15%</li>
+                  <li>• Fase 3 — 50% del objetivo: libera +25%</li>
+                  <li>• Fase 4 — 75% del objetivo: libera +25%</li>
+                  <li>• Fase 5 — 100% del objetivo: libera el resto</li>
+                </ul>
+                <p className="mt-4 text-xs text-neutral-400">
+                  *Ejemplo de referencia. Los porcentajes finales se fijan en el whitepaper.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* DASHBOARD PLACEHOLDER */}
       

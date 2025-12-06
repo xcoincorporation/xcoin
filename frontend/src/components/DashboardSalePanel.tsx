@@ -81,35 +81,38 @@ export default function DashboardSalePanel() {
       });
 
       if (!res.ok) {
-        const text = await res.text();
-        throw new Error(
-          `Error HTTP ${res.status} en /api/sale-analytics: ${text}`
-        );
+        throw new Error(`HTTP ${res.status}`);
       }
 
       const data = await res.json();
 
-      if (!data || data.ok === false || !data.stats) {
-        throw new Error(
-          data?.error ||
-            "La API de analytics devolvió un error o una respuesta incompleta."
+      // Si el backend no pudo calcular métricas, lo tratamos como "sin datos",
+      // NO como error: dejamos el panel en estado neutro sin mostrar toast rojo.
+      if (!data.ok || !data.metrics) {
+        console.warn(
+          "[DashboardSalePanel] métricas no disponibles",
+          data.reason ?? "metrics-empty"
         );
+        setAnalytics(null);
+        return; // salimos SIN lanzar error
       }
 
+      const m = data.metrics;
+
       setAnalytics({
-        txCount: data.stats.txCount ?? 0,
-        uniqueBuyers: data.stats.uniqueBuyers ?? 0,
-        totalEthFormatted: data.stats.totalEthFormatted ?? "0",
-        totalTokensFormatted: data.stats.totalTokensFormatted ?? "0",
-        avgEthFormatted: data.stats.avgEthFormatted ?? "0",
-        avgTokensFormatted: data.stats.avgTokensFormatted ?? "0",
-        lastBuyer: data.lastPurchase?.buyer ?? null,
-        lastTokensFormatted:
-          data.lastPurchase?.tokensFormatted ?? null,
+        txCount: m.txCount ?? 0,
+        uniqueBuyers: m.buyers ?? 0,
+        totalEthFormatted: String(m.totalEth ?? 0),
+        totalTokensFormatted: String(m.totalXcoin ?? 0),
+        avgEthFormatted: String(m.avgEth ?? 0),
+        avgTokensFormatted: String(m.avgTokens ?? 0),
+        lastBuyer: m.lastBuyer ?? null,
+        lastTokensFormatted: m.lastTokens ?? null,
       });
+
     } catch (e: any) {
       console.error("DashboardSalePanel.loadAnalytics error", e);
-      setAnalytics(null); // para evitar leer propiedades de undefined
+      setAnalytics(null);
       toast(
         "No se pudieron cargar las métricas de la venta (analytics).",
         "error"
@@ -118,6 +121,7 @@ export default function DashboardSalePanel() {
       setLoadingAnalytics(false);
     }
   }
+
 
   useEffect(() => {
     loadInfo();

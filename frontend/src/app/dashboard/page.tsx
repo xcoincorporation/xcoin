@@ -5,8 +5,11 @@ import { getReadContract, readBasics, toHuman } from "@/lib/xcoin";
 import DashboardSalePanel from "@/components/DashboardSalePanel";
 import DashboardWalletPanel from "@/components/DashboardWalletPanel";
 import SaleAdminPanel from "@/components/SaleAdminPanel";
-import { VestingCard } from "@/components/VestingCard";
-
+// Si en algún momento quieres usar el VestingCard o los nuevos componentes premium, los importas aquí.
+// import { VestingCard } from "@/components/VestingCard";
+// import { VestingPhaseHero } from "@/components/VestingPhaseHero";
+// import { VestingProgressBar } from "@/components/VestingProgressBar";
+// import { VestingPhaseTable } from "@/components/VestingPhaseTable";
 
 type Basics = Awaited<ReturnType<typeof readBasics>>;
 type LoadState = "idle" | "connecting" | "refreshing";
@@ -17,14 +20,6 @@ export default function DashboardPage() {
   const [balance, setBalance] = useState<bigint | null>(null);
   const [state, setState] = useState<LoadState>("idle");
   const [error, setError] = useState<string | null>(null);
-  return (
-    <div className="space-y-10 px-4 md:px-0">
-      <DashboardSalePanel />
-      <VestingCard />
-    </div>
-  );
-
-
 
   // Carga básica del token (nombre, símbolo, supply, tesorería, etc.)
   useEffect(() => {
@@ -131,15 +126,15 @@ export default function DashboardPage() {
 
   const isBusy = state !== "idle";
 
+  // 👉 ÚNICO return del componente
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 space-y-8">
+      {/* Cabecera */}
       <section>
-        <h1 className="text-2xl font-semibold text-white">
-          XCoin Dashboard
-        </h1>
+        <h1 className="text-2xl font-semibold text-white">XCoin Dashboard</h1>
         <p className="mt-1 text-sm text-neutral-400">
-          Vista técnica para holders: estado on-chain del token y balance
-          de tu wallet en Sepolia.
+          Vista técnica para holders: estado on-chain del token y balance de tu
+          wallet en Sepolia.
         </p>
       </section>
 
@@ -180,9 +175,16 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* Conexión de wallet */}
+      {/* Aquí podrías integrar el Hero/Progress/Table de Vesting “premium” */}
+      {/*
+      <VestingPhaseHero phases={PHASES} state={stateVesting} />
+      <VestingProgressBar phases={PHASES} currentPhaseId={stateVesting.currentPhaseId} />
+      <VestingPhaseTable phases={PHASES} currentPhaseId={stateVesting.currentPhaseId} />
+      */}
+
+      {/* Conexión de wallet + paneles */}
       <section className="rounded-2xl bg-[#151515] border border-white/5 p-6 space-y-4">
-        <header className="flex items-center justify-between gap-3">
+        <header className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-white">
               Tu wallet en Sepolia
@@ -219,19 +221,20 @@ export default function DashboardPage() {
               Desconectar
             </button>
           </div>
-
-          <div className="grid gap-6 md:grid-cols-2 mt-6">
-            <DashboardSalePanel />
-            <DashboardWalletPanel />
-          </div>
-          <div className="mt-8">
-            <SaleAdminPanel />
-          </div>
-
         </header>
 
+        {/* Paneles de Dashboard (venta + wallet + admin) */}
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <DashboardSalePanel />
+          <DashboardWalletPanel />
+        </div>
+
+        <div className="mt-8">
+          <SaleAdminPanel />
+        </div>
+
         {/* Estado de la wallet */}
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <div className="text-xs text-neutral-400">Dirección conectada</div>
             <div className="rounded-xl bg-[#111111] border border-white/5 px-3 py-2 text-xs font-mono text-neutral-200 truncate">

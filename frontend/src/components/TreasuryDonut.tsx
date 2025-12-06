@@ -1,123 +1,89 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
-import { getReadContract } from "@/lib/xcoin";
 
-const TREASURY_ADDR = process.env.NEXT_PUBLIC_TREASURY_ADDR!;
-
-function toHuman(raw: bigint, decimals: number) {
-  return Number(raw) / 10 ** decimals;
-}
-function fmt(n: number, maxFrac = 0) {
-  try { return new Intl.NumberFormat("es-AR", { maximumFractionDigits: maxFrac }).format(n); }
-  catch { return n.toLocaleString(); }
-}
+import React from "react";
 
 export default function TreasuryDonut() {
-  const [decimals, setDecimals] = useState<number>(18);
-  const [total, setTotal] = useState<number>(0);
-  const [treasury, setTreasury] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
-
-  async function load() {
-    try {
-      const c = getReadContract();
-      const [dec, ts, tbal] = await Promise.all([
-        c.decimals(),
-        c.totalSupply(),
-        c.balanceOf(TREASURY_ADDR),
-      ]);
-      const d = Number(dec);
-      setDecimals(d);
-      setTotal(toHuman(ts, d));
-      setTreasury(toHuman(tbal, d));
-      setErr(null);
-    } catch (e: any) {
-      setErr(e?.message ?? "Error de lectura on-chain");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    load();
-    const id = setInterval(load, 15_000); // auto-refresh cada 15s
-    return () => clearInterval(id);
-  }, []);
-
-  const pctTre = useMemo(() => (total > 0 ? (treasury / total) * 100 : 0), [total, treasury]);
-  const pctUsr = useMemo(() => Math.max(0, 100 - pctTre), [pctTre]);
-
-  // SVG donut: 2 arcos sobre un círculo usando strokeDasharray
-  const R = 70;                 // radio
-  const C = 2 * Math.PI * R;    // circunferencia
-  const dashTre = (pctTre / 100) * C;
-  const dashUsr = C - dashTre;
-
   return (
-    <div className="rounded-2xl bg-neutral-900/50 border border-white/10 p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold">Distribución actual</h3>
-        <span className="text-xs opacity-60">auto-refresh 15s</span>
-      </div>
+    <section className="w-full py-12 lg:py-16">
+      <div className="mx-auto flex max-w-6xl flex-col gap-10 rounded-3xl bg-[radial-gradient(circle_at_top,_#0f172a_0,_#020617_55%,_#000_100%)] px-6 py-10 shadow-[0_0_40px_rgba(56,189,248,0.25)] ring-1 ring-cyan-500/20 lg:flex-row lg:items-center lg:px-10 lg:py-12">
+        {/* Donut */}
+        <div className="flex w-full flex-1 items-center justify-center">
+          <div className="relative flex items-center justify-center">
+            {/* Círculo principal */}
+            <div className="h-52 w-52 rounded-full bg-[conic-gradient(from_220deg,_#22d3ee_0,_#22d3ee_22%,_rgba(15,23,42,0.85)_22%,_rgba(15,23,42,0.85)_100%)] shadow-[0_0_60px_rgba(56,189,248,0.55)]" />
 
-      {loading ? (
-        <div className="text-sm opacity-80">Cargando…</div>
-      ) : err ? (
-        <div className="text-sm text-red-300">⛔ {err}</div>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-6 items-center">
-          {/* Donut */}
-          <div className="flex items-center justify-center">
-            <svg width="180" height="180" viewBox="0 0 180 180" className="-rotate-90">
-              {/* fondo */}
-              <circle cx="90" cy="90" r={R} fill="none" stroke="#2b2b2b" strokeWidth="22" />
-              {/* usuarios */}
-              <circle
-                cx="90" cy="90" r={R} fill="none"
-                stroke="#3f3f46" strokeWidth="22"
-                strokeDasharray={`${dashUsr} ${C}`}
-                strokeDashoffset={dashTre}
-              />
-              {/* tesorería */}
-              <circle
-                cx="90" cy="90" r={R} fill="none"
-                stroke="#f5c84b" strokeWidth="22"
-                strokeDasharray={`${dashTre} ${C}`}
-                strokeDashoffset={0}
-              />
-            </svg>
-          </div>
+            {/* Agujero central */}
+            <div className="absolute h-28 w-28 rounded-full bg-slate-950/95 ring-2 ring-cyan-400/40" />
 
-          {/* Datos */}
-          <div className="space-y-3">
-            <div className="text-3xl font-semibold">
-              {fmt(total)} <span className="text-sm opacity-70">XCOIN</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="inline-block w-3 h-3 rounded-full" style={{ background: "#f5c84b" }} />
-              <div className="flex-1">
-                <div className="flex justify-between text-sm">
-                  <span>Tesorería</span>
-                  <span className="font-medium">{fmt(treasury)} ({fmt(pctTre, 2)}%)</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="inline-block w-3 h-3 rounded-full" style={{ background: "#3f3f46" }} />
-              <div className="flex-1">
-                <div className="flex justify-between text-sm">
-                  <span>Usuarios / Circulante</span>
-                  <span className="font-medium">{fmt(total - treasury)} ({fmt(pctUsr, 2)}%)</span>
-                </div>
-              </div>
-            </div>
-            <div className="text-xs opacity-60">
-              Objetivo Tesorería: {process.env.NEXT_PUBLIC_TREASURY_PCT ?? 20}% • Dirección: {TREASURY_ADDR.slice(0,6)}…{TREASURY_ADDR.slice(-4)}
+            {/* Etiqueta central */}
+            <div className="pointer-events-none absolute flex flex-col items-center justify-center text-center text-xs uppercase tracking-[0.15em] text-slate-400">
+              <span className="text-[0.65rem] text-cyan-300/80">
+                Distribución
+              </span>
+              <span className="mt-1 text-[0.7rem] font-semibold text-slate-50">
+                80 / 20
+              </span>
             </div>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Texto + leyenda */}
+        <div className="flex flex-1 flex-col gap-6 text-sm text-slate-300">
+          <header>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
+              Tokenomics 80/20
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-50 drop-shadow-[0_0_20px_rgba(56,189,248,0.5)]">
+              Distribución actual del supply
+            </h2>
+            <p className="mt-3 max-w-xl text-sm text-slate-300/80">
+              El laboratorio mantiene un modelo simple:{" "}
+              <span className="font-semibold text-cyan-200">
+                80% usuarios (bloqueado en XCoinVault)
+              </span>{" "}
+              y{" "}
+              <span className="font-semibold text-amber-200">
+                20% tesorería
+              </span>{" "}
+              para liquidez, desarrollo y market making.
+            </p>
+          </header>
+
+          {/* Leyenda */}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="flex items-center gap-3 rounded-2xl bg-slate-900/70 px-4 py-3 ring-1 ring-cyan-500/30">
+              <div className="h-3 w-3 rounded-full bg-cyan-300 shadow-[0_0_18px_rgba(56,189,248,0.9)]" />
+              <div className="flex flex-col">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-200">
+                  Tesorería
+                </span>
+                <span className="text-sm text-slate-100">
+                  20% del supply – estabilidad, MM, reservas.
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 rounded-2xl bg-slate-900/70 px-4 py-3 ring-1 ring-emerald-400/25">
+              <div className="h-3 w-3 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(52,211,153,0.9)]" />
+              <div className="flex flex-col">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-200">
+                  Usuarios / Circulante
+                </span>
+                <span className="text-sm text-slate-100">
+                  80% del supply, liberado por fases desde XCoinVault.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-1 text-xs text-slate-500">
+            Todos los datos mostrados pertenecen al{" "}
+            <span className="text-cyan-300">entorno de laboratorio</span> sobre
+            testnet Sepolia. No representan una emisión en mainnet ni una
+            oferta pública.
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }

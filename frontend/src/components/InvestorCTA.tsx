@@ -4,96 +4,96 @@ import Link from "next/link";
 
 export default function InvestorCTA() {
   return (
-    <section className="mx-auto max-w-6xl px-4 mt-14 space-y-6">
-      <div className="space-y-2">
-        <h2 className="text-xl md:text-2xl font-semibold text-white">
-          Pensado para holders de largo plazo
-        </h2>
-        <p className="text-sm text-neutral-400 max-w-3xl">
-          XCoin no está diseñado para especulación de minutos. El experimento
-          prioriza acumulación disciplinada, tesorería estable y métricas
-          on-chain públicas antes de cualquier listado en exchanges.
-        </p>
-      </div>
-
-      {/* Tres pilares para inversores */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-neutral-800 bg-black/40 px-5 py-4 space-y-2">
-          <div className="text-xs font-semibold tracking-[0.18em] uppercase text-neutral-500">
-            Entrada
-          </div>
-          <h3 className="text-sm font-semibold text-white">
-            Precio de referencia simple
-          </h3>
-          <p className="text-sm text-neutral-400">
-            Durante la Fase 0 el precio de referencia se fija en{" "}
-            <span className="font-semibold text-[#f5c84b]">
-              1 US$ por XCOIN
-            </span>{" "}
-            sobre un supply total de 1.000.000. Es un laboratorio en Sepolia,
-            no un listado comercial todavía.
+    <section className="w-full bg-gradient-to-b from-slate-950 via-slate-950 to-slate-950/95 py-10 pb-14 lg:py-12">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 lg:px-10">
+        {/* Título + subtítulo */}
+        <div className="max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
+            XCoin · El otro lado del bloque
+          </p>
+          <h1 className="mt-3 text-3xl font-semibold text-slate-50 drop-shadow-[0_0_30px_rgba(56,189,248,0.6)] sm:text-4xl">
+            Pensado para holders de largo plazo.
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300/85">
+            XCoin no está diseñado para especulación de minutos. El laboratorio
+            prioriza acumulación disciplinada, tesorería estable y métricas
+            on-chain públicas antes de cualquier listado en exchanges.
           </p>
         </div>
 
-        <div className="rounded-2xl border border-neutral-800 bg-black/40 px-5 py-4 space-y-2">
-          <div className="text-xs font-semibold tracking-[0.18em] uppercase text-neutral-500">
-            Protección
+        {/* Cards */}
+        <div className="grid gap-4 md:grid-cols-3">
+          {/* Entrada */}
+          <div className="group rounded-3xl border border-cyan-500/25 bg-slate-950/90 p-5 shadow-[0_0_26px_rgba(56,189,248,0.35)] transition-transform duration-300 group-hover:-translate-y-0.5">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-cyan-300">
+              Entrada
+            </p>
+            <h3 className="mt-2 text-sm font-semibold text-slate-50">
+              Precio de referencia simple
+            </h3>
+            <p className="mt-2 text-xs text-slate-300/90">
+              Durante la Fase 0 el precio de referencia se fija en{" "}
+              <span className="font-semibold text-cyan-200">1 US$ por XCOIN</span>{" "}
+              sobre un supply total de 1.000.000. Es un laboratorio en Sepolia,
+              no un listado comercial todavía.
+            </p>
           </div>
-          <h3 className="text-sm font-semibold text-white">
-            Diseño anti pump &amp; dump
-          </h3>
-          <p className="text-sm text-neutral-400">
-            El modelo 80/20 reserva{" "}
-            <span className="font-semibold">200.000 XCOIN</span> en tesorería
-            (20%) y{" "}
-            <span className="font-semibold">800.000 XCOIN</span> para usuarios
-            (80%). Los hitos de desbloqueo y vesting se definen en el
-            whitepaper para desalentar ciclos cortos de venta masiva.
-          </p>
+
+          {/* Protección */}
+          <div className="group rounded-3xl border border-emerald-400/25 bg-slate-950/90 p-5 shadow-[0_0_26px_rgba(52,211,153,0.35)] transition-transform duration-300 group-hover:-translate-y-0.5">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-emerald-300">
+              Protección
+            </p>
+            <h3 className="mt-2 text-sm font-semibold text-slate-50">
+              Diseño anti pump & dump
+            </h3>
+            <p className="mt-2 text-xs text-slate-300/90">
+              El modelo 80/20 reserva 200.000 XCOIN en tesorería (20%) y
+              800.000 XCOIN para usuarios (80%). Los hitos de desbloqueo y
+              vesting se definen en el whitepaper para desalinear ciclos cortos
+              de venta masiva.
+            </p>
+          </div>
+
+          {/* Transparencia */}
+          <div className="group rounded-3xl border border-indigo-400/30 bg-slate-950/90 p-5 shadow-[0_0_30px_rgba(129,140,248,0.4)] transition-transform duration-300 group-hover:-translate-y-0.5">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-indigo-300">
+              Transparencia
+            </p>
+            <h3 className="mt-2 text-sm font-semibold text-slate-50">
+              Métricas on-chain y oráculo público
+            </h3>
+            <p className="mt-2 text-xs text-slate-300/90">
+              Cualquier holder puede auditar el estado del token en el
+              Dashboard técnico y seguir el MarketCap objetivo desde el
+              Oráculo, ambos conectados al contrato de Sepolia.
+            </p>
+          </div>
         </div>
 
-        <div className="rounded-2xl border border-neutral-800 bg-black/40 px-5 py-4 space-y-2">
-          <div className="text-xs font-semibold tracking-[0.18em] uppercase text-neutral-500">
-            Transparencia
-          </div>
-          <h3 className="text-sm font-semibold text-white">
-            Métricas on-chain y oráculo público
-          </h3>
-          <p className="text-sm text-neutral-400">
-            Cualquier holder puede auditar el estado del token en el{" "}
-            <span className="font-semibold">Dashboard técnico</span> y seguir
-            el Market Cap objetivo desde el{" "}
-            <span className="font-semibold">Oráculo</span>, ambos conectados al
-            contrato de Sepolia.
-          </p>
-        </div>
-      </div>
+        {/* Botones CTA */}
+        <div className="flex flex-wrap gap-3 pt-2">
+          <Link
+            href="/dashboard"
+            className="rounded-full bg-cyan-500 px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-950 shadow-[0_0_28px_rgba(56,189,248,0.8)] transition hover:bg-cyan-400"
+          >
+            Ver Dashboard técnico
+          </Link>
 
-      {/* CTAs para gente seria */}
-      <div className="flex flex-wrap items-center gap-3 pt-2">
-        <Link href="/dashboard" className="btn btn-primary text-sm">
-          Ver Dashboard técnico
-        </Link>
-        <Link
-          href="/buy"
-          className="btn text-sm border border-[#f5c84b]/70 bg-[#f5c84b]/10 hover:bg-[#f5c84b]/20 text-[#f5c84b]"
-        >
-          Probar compra demo
-        </Link>
-        <Link
-          href="/oraculo"
-          className="btn text-sm border border-neutral-700/70 bg-neutral-900/60 hover:bg-neutral-800/80"
-        >
-          Ver Oráculo y Market Cap
-        </Link>
-        <a
-          href="https://github.com/xcoincorporation/xcoin"
-          target="_blank"
-          rel="noreferrer"
-          className="text-xs text-neutral-500 hover:text-neutral-300 underline-offset-4 hover:underline"
-        >
-          Ver repositorio y contratos
-        </a>
+          <Link
+            href="/comprar-demo"
+            className="rounded-full border border-emerald-400/60 bg-transparent px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200/90 hover:bg-emerald-500/10"
+          >
+            Probar compra demo
+          </Link>
+
+          <Link
+            href="/oraculo"
+            className="rounded-full border border-indigo-400/60 bg-transparent px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-indigo-200/90 hover:bg-indigo-500/10"
+          >
+            Ver Oráculo y MarketCap
+          </Link>
+        </div>
       </div>
     </section>
   );
