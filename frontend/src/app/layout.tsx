@@ -82,8 +82,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="pb-12">{children}</main>
 
             {/* FOOTER */}
-            <footer className="mt-12 border-t border-neutral-800/80 bg-black/40 py-4 text-center text-xs text-neutral-500">
-              © {new Date().getFullYear()} XCoin Corporation — El otro lado del bloque.
+            <footer className="mt-16 border-t border-slate-800/60 bg-black/40 pt-8 pb-10 px-4 text-center text-[0.7rem] text-slate-500/80 leading-relaxed">
+              <p>
+                © {new Date().getFullYear()} XCoin Corporation — El otro lado del bloque.
+              </p>
+              <p className="mt-2 max-w-4xl mx-auto">
+                XCoin es un experimento técnico de laboratorio desplegado sobre la red de
+                pruebas Sepolia. Ningún elemento del presente sitio constituye oferta de
+                inversión, asesoramiento financiero ni promesa de retorno. El acceso a
+                fases futuras, whitelists o pruebas técnicas dependerá de criterios de
+                elegibilidad, requisitos de cumplimiento y del marco regulatorio vigente en
+                cada jurisdicción. El proyecto podrá modificarse o cancelarse sin previo
+                aviso.
+              </p>
             </footer>
           </div>
         </ToastProvider>

@@ -256,7 +256,11 @@ export async function getVestingSnapshot() {
   // Consultamos el oráculo HTTP del backend Next.js
   let oracleMarketCap = 0;
   try {
-    const res = await fetch("/api/oracle", {
+    // Construimos una URL absoluta para usar desde el servidor
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+    const res = await fetch(`${baseUrl}/api/oracle`, {
       cache: "no-store",
     });
 
